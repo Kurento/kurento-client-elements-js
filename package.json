@@ -1,5 +1,5 @@
 {
-  "name": "kws-media-api-elements",
+  "name": "kurento-client-elements",
   "version": "5.0.0",
   "description": "Elements implementations for kurento media server",
   "homepage": "http://www.kurento.com",
@@ -8,10 +8,10 @@
   "license": "LGPL",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Kurento/kws-media-api-elements.git"
+    "url": "https://github.com/Kurento/kurento-client-elements.git"
   },
   "bugs": {
-    "url": "https://github.com/Kurento/kws-media-api-elements/issues",
+    "url": "https://github.com/Kurento/kurento-client-elements/issues",
     "email": "info@kurento.com"
   },
   "keywords": [
@@ -24,7 +24,7 @@
   ],
   "dependencies": {
     "inherits": "^2.0.1",
-    "kws-media-api-core":"5.0.0"
+    "kurento-client-core":"5.0.0"
   },
   "peerDependencies": {
     "kws-media-api": "^5.0.0-dev"

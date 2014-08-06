@@ -1,7 +1,7 @@
 {
-  "name": "kws-media-api-elements",
+  "name": "kurento-client-elements",
   "description": "Elements implementations for kurento media server",
-  "main": "dist/kws-media-api-elements.js",
+  "main": "dist/kurento-client-elements.js",
   "license": "LGPL",
   "ignore": [
     "doc/",
@@ -22,6 +22,6 @@
   "homepage": "http://www.kurento.com",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Kurento/kws-media-api-elements.git"
+    "url": "https://github.com/Kurento/kurento-client-elements.git"
   }
 }
