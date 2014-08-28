@@ -1,15 +1,15 @@
 {
-  "name": "kurento-module-elements",
-  "description": "",
+  "name": "kurento-client-elements",
+  "description": "Elements implementations for kurento media server",
   "homepage": "http://www.kurento.com",
-  "main": "dist/kurento-module-elements.js",
+  "main": "dist/kurento-client-elements.js",
   "authors": [
     "Kurento <info@kurento.com> (http://kurento.org)"
   ],
   "license": "LGPL",
   "repository": {
     "type": "git",
-    "url": "Kurento/kurento-module-elements-js"
+    "url": "Kurento/kurento-client-elements-js"
   },
   "keywords": [
     "API",
