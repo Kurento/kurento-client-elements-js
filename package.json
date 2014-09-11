@@ -1,6 +1,6 @@
 {
   "name": "kurento-client-elements",
-  "version": "5.0.0",
+  "version": "Kurento/kurento-client-elements-js#develop",
   "description": "Elements implementations for kurento media server",
   "homepage": "http://www.kurento.com",
   "main": "lib/index.js",
@@ -24,5 +24,5 @@
   ],
   "dependencies": {
     "inherits": "^2.0.1",
-    "kurento-client-core": "^5.0.0"
+    "kurento-client-core": "Kurento/kurento-client-core-js#develop"
   }}
