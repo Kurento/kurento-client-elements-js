@@ -1,24 +1,22 @@
 {
   "name": "kurento-client-elements",
   "description": "Elements implementations for kurento media server",
-  "homepage": "http://www.kurento.com",
   "main": "dist/kurento-client-elements.js",
-  "authors": [
-    "Kurento <info@kurento.com> (http://kurento.org)"
-  ],
-  "license": "LGPL",
-  "repository": {
-    "type": "git",
-    "url": "Kurento/kurento-client-elements-js"
-  },
-  "keywords": [
-    "API",
-    "Kurento",
-    "WebRTC"
-  ],
   "ignore": [
     "doc/",
     "lib/",
     "package.json"
-  ]
+  ],
+  "keywords": [
+    "Kurento"
+  ],
+  "license": "LGPL",
+  "homepage": "http://www.kurento.com",
+  "authors": [
+    "Kurento <info@kurento.com> (http://kurento.org)"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "Kurento/kurento-client-elements-js"
+  }
 }
