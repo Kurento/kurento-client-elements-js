@@ -72,57 +72,6 @@
       ]
     },
     {
-      "name": "PlumberEndpoint",
-      "doc": "Endpoint that allows remote pipelines to negotiate the format of the media as well as to send data over SCTP. A :rom:cls:`PlumberEndpoint` contains paired sink and source :rom:cls:`MediaPad` for audio and video. This API is still under development so it might change without requiring a version change.",
-      "extends": "Endpoint",
-      "constructor": {
-        "params": [
-          {
-            "name": "mediaPipeline",
-            "doc": "the :rom:cls:`MediaPipeline` to which the endpoint belongs",
-            "type": "MediaPipeline"
-          }
-        ],
-        "doc": "Builder for the :rom:cls:`PlumberEndpoint`"
-      },
-      "properties": [
-        {
-          "name": "address",
-          "doc": "IP Address where this endpoint will be waiting for incoming connections of the control channel",
-          "type": "String",
-          "final": true
-        },
-        {
-          "name": "port",
-          "doc": "Local port where this end point is attached",
-          "type": "int",
-          "final": true
-        }
-      ],
-      "methods": [
-        {
-          "params": [
-            {
-              "name": "address",
-              "doc": "IP Address where the :rom:cls:`PlumberEndpoint` is waiting for",
-              "type": "String"
-            },
-            {
-              "name": "port",
-              "doc": "Port where the :rom:cls:`PlumberEndpoint` is listening to",
-              "type": "int"
-            }
-          ],
-          "return": {
-            "type": "boolean",
-            "doc": "If both :rom:cls:`PlumberEndpoints` could be connected"
-          },
-          "name": "link",
-          "doc": "Connect a control channel to the remote :rom:cls:`PlumberEndpoint`"
-        }
-      ]
-    },
-    {
       "name": "Composite",
       "doc": "A :rom:cls:`Hub` that mixes the :rom:attr:`MediaType.AUDIO` stream of its connected sources and constructs a grid with the :rom:attr:`MediaType.VIDEO` streams of its connected sources into its sink",
       "extends": "Hub",
