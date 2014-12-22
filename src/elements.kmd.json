@@ -137,7 +137,7 @@
     {
       "name": "WebRtcEndpoint",
       "doc": "WebRtcEndpoint interface. This type of ``Endpoint`` offers media streaming using WebRTC.",
-      "extends": "SdpEndpoint",
+      "extends": "BaseRtpEndpoint",
       "constructor": {
         "params": [
           {
@@ -147,19 +147,7 @@
           }
         ],
         "doc": "Builder for the :rom:cls:`WebRtcEndpoint`"
-      },
-      "properties": [
-        {
-          "name": "minVideoSendBandwidth",
-          "doc": "Minimum video bandwidth for sending.\n  Unit: kbps(kilobits per second).\n   0: unlimited.\n  Default value: 100",
-          "type": "int"
-        },
-        {
-          "name": "maxVideoSendBandwidth",
-          "doc": "Maximum video bandwidth for sending.\n  Unit: kbps(kilobits per second).\n   0: unlimited.\n  Default value: 500",
-          "type": "int"
-        }
-      ]
+      }
     },
     {
       "name": "HttpGetEndpoint",
