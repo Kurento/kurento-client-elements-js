@@ -1,6 +1,6 @@
 {
   "name": "elements",
-  "version": "5.1.0-dev",
+  "version": "5.1.0",
   "kurentoVersion": "^5.0.0",
   "imports": [
     {
@@ -15,7 +15,7 @@
       "java": {
         "mavenGroupId": "org.kurento",
         "mavenArtifactId": "kms-api-elements",
-        "mavenVersion": "5.1.0-SNAPSHOT"
+        "mavenVersion": "5.1.0"
       }
     },
     "api": {
@@ -23,13 +23,13 @@
         "packageName": "org.kurento.client",
         "mavenGroupId": "org.kurento",
         "mavenArtifactId": "kurento-client",
-        "mavenVersion": "5.1.0-SNAPSHOT"
+        "mavenVersion": "5.1.0"
       },
       "js": {
         "nodeName": "kurento-client-elements",
         "npmDescription": "Elements implementations for kurento media server",
         "npmGit": "Kurento/kurento-client-elements-js",
-        "npmVersion": "Kurento/kurento-client-elements-js#develop"
+        "npmVersion": "5.1.0"
       }
     },
     "implementation": {
