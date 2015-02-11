@@ -1,13 +1,13 @@
 {
   "name": "elements",
-  "version": "5.1.1-dev",
-  "kurentoVersion": "^5.0.0",
+  "version": "6.0.0-dev",
+  "kurentoVersion": "6.0.0-dev",
   "imports": [
     {
       "name": "core",
-      "version": "^5.0.0",
-      "mavenVersion": "[5.0.0,6.0.0)",
-      "npmVersion": ">=5.0.0 <6.0.0"
+      "version": "6.0.0-dev",
+      "mavenVersion": "6.0.0-SNAPSHOT",
+      "npmVersion": "Kurento/kurento-client-core-js#develop"
     }
   ],
   "code": {
@@ -15,7 +15,7 @@
       "java": {
         "mavenGroupId": "org.kurento",
         "mavenArtifactId": "kms-api-elements",
-        "mavenVersion": "5.1.1-SNAPSHOT"
+        "mavenVersion": "6.0.0-SNAPSHOT"
       }
     },
     "api": {
@@ -23,7 +23,7 @@
         "packageName": "org.kurento.client",
         "mavenGroupId": "org.kurento",
         "mavenArtifactId": "kurento-client",
-        "mavenVersion": "5.1.1-SNAPSHOT"
+        "mavenVersion": "6.0.0-SNAPSHOT"
       },
       "js": {
         "nodeName": "kurento-client-elements",
