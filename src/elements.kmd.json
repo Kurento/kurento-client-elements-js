@@ -7,7 +7,7 @@
       "name": "core",
       "version": "6.0.0-dev",
       "mavenVersion": "6.0.0-SNAPSHOT",
-      "npmVersion": "Kurento/kurento-client-core-js#develop"
+      "npmVersion": "Kurento/kurento-client-core-js"
     }
   ],
   "code": {
@@ -29,7 +29,7 @@
         "nodeName": "kurento-client-elements",
         "npmDescription": "Elements implementations for kurento media server",
         "npmGit": "Kurento/kurento-client-elements-js",
-        "npmVersion": "Kurento/kurento-client-elements-js#develop"
+        "npmVersion": "Kurento/kurento-client-elements-js"
       }
     },
     "implementation": {
