@@ -147,7 +147,29 @@
           }
         ],
         "doc": "Builder for the :rom:cls:`WebRtcEndpoint`"
-      }
+      },
+      "methods": [
+        {
+          "params": [],
+          "name": "gatherCandidates",
+          "doc": "Init the gathering of ICE candidates.\nIt must be called after SdpEndpoint::generateOffer or SdpEndpoint::processOffer"
+        },
+        {
+          "params": [
+            {
+              "name": "candidate",
+              "doc": "Remote ICE candidate",
+              "type": "IceCandidate"
+            }
+          ],
+          "name": "addIceCandidate",
+          "doc": "Provide a remote ICE candidate"
+        }
+      ],
+      "events": [
+        "OnIceCandidate",
+        "OnIceGatheringDone"
+      ]
     },
     {
       "name": "HttpGetEndpoint",
@@ -454,6 +476,28 @@
       ],
       "name": "MediaProfileSpecType",
       "doc": "Media Profile.\n\nCurrently WEBM and MP4 are supported."
+    },
+    {
+      "typeFormat": "REGISTER",
+      "properties": [
+        {
+          "name": "candidate",
+          "doc": "The candidate-attribute as defined in section 15.1 of ICE (rfc5245).",
+          "type": "String"
+        },
+        {
+          "name": "sdpMid",
+          "doc": "If present, this contains the identifier of the 'media stream identification'.",
+          "type": "String"
+        },
+        {
+          "name": "sdpMLineIndex",
+          "doc": "The index (starting at zero) of the m-line in the SDP this candidate is associated with.",
+          "type": "int"
+        }
+      ],
+      "name": "IceCandidate",
+      "doc": "IceCandidate representation based on standard (http://www.w3.org/TR/webrtc/#rtcicecandidate-type)."
     }
   ],
   "events": [
@@ -462,6 +506,24 @@
       "extends": "Media",
       "name": "EndOfStream",
       "doc": "Event raised when the stream that the element sends out is finished."
+    },
+    {
+      "properties": [
+        {
+          "name": "candidate",
+          "doc": "New gathered local candidate",
+          "type": "IceCandidate"
+        }
+      ],
+      "extends": "Media",
+      "name": "OnIceCandidate",
+      "doc": "Notify of a new gathered local candidate."
+    },
+    {
+      "properties": [],
+      "extends": "Media",
+      "name": "OnIceGatheringDone",
+      "doc": "Notify that all candidates have been gathered."
     }
   ]
 }
