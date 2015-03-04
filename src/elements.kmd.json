@@ -380,6 +380,18 @@
         ],
         "doc": "Builder for the :rom:cls:`WebRtcEndpoint`"
       },
+      "properties": [
+        {
+          "name": "stunServerAddress",
+          "doc": "Address of the STUN server (Only IP address are supported)",
+          "type": "String"
+        },
+        {
+          "name": "stunServerPort",
+          "doc": "Port of the STUN server",
+          "type": "int"
+        }
+      ],
       "methods": [
         {
           "params": [],
