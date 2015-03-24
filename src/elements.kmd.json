@@ -117,7 +117,8 @@
       ],
       "events": [
         "OnIceCandidate",
-        "OnIceGatheringDone"
+        "OnIceGatheringDone",
+        "OnIceComponentStateChanged"
       ]
     },
     {
@@ -501,6 +502,19 @@
     {
       "typeFormat": "ENUM",
       "values": [
+        "DISCONNECTED",
+        "GATHERING",
+        "CONNECTING",
+        "CONNECTED",
+        "READY",
+        "FAILED"
+      ],
+      "name": "IceComponentState",
+      "doc": "States of an ICE component."
+    },
+    {
+      "typeFormat": "ENUM",
+      "values": [
         "WEBM",
         "MP4",
         "WEBM_VIDEO_ONLY",
@@ -530,6 +544,28 @@
       "extends": "Media",
       "name": "OnIceGatheringDone",
       "doc": "Notify that all candidates have been gathered."
+    },
+    {
+      "properties": [
+        {
+          "name": "streamId",
+          "doc": "The ID of the stream",
+          "type": "int"
+        },
+        {
+          "name": "componentId",
+          "doc": "The ID of the component",
+          "type": "int"
+        },
+        {
+          "name": "state",
+          "doc": "The state of the component",
+          "type": "IceComponentState"
+        }
+      ],
+      "extends": "Media",
+      "name": "OnIceComponentStateChanged",
+      "doc": "Notify about the change of an ICE component state."
     },
     {
       "properties": [],
