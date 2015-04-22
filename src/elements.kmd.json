@@ -1,6 +1,6 @@
 {
   "name": "elements",
-  "version": "5.1.3",
+  "version": "5.1.4-dev",
   "kurentoVersion": "^5.0.0",
   "imports": [
     {
@@ -15,7 +15,7 @@
       "java": {
         "mavenGroupId": "org.kurento",
         "mavenArtifactId": "kms-api-elements",
-        "mavenVersion": "5.1.3"
+        "mavenVersion": "5.1.4-SNAPSHOT"
       }
     },
     "api": {
@@ -23,7 +23,7 @@
         "packageName": "org.kurento.client",
         "mavenGroupId": "org.kurento",
         "mavenArtifactId": "kurento-client",
-        "mavenVersion": "5.1.3"
+        "mavenVersion": "5.1.4-SNAPSHOT"
       },
       "js": {
         "nodeName": "kurento-client-elements",
