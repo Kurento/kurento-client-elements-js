@@ -125,12 +125,66 @@
           ],
           "name": "addIceCandidate",
           "doc": "Provide a remote ICE candidate"
+        },
+        {
+          "params": [
+            {
+              "name": "label",
+              "doc": "Channel's label attribute",
+              "type": "String",
+              "optional": true,
+              "defaultValue": ""
+            },
+            {
+              "name": "ordered",
+              "doc": "If the data channel should guarantee order or not",
+              "type": "boolean",
+              "optional": true,
+              "defaultValue": true
+            },
+            {
+              "name": "maxPacketLifeTime",
+              "doc": "the length of the time window (in milliseconds) during which transmissions and retransmissions may occur in unreliable mode",
+              "type": "int",
+              "optional": true,
+              "defaultValue": -1
+            },
+            {
+              "name": "maxRetransmits",
+              "doc": "maximum number of retransmissions that are attempted in unreliable mode",
+              "type": "int",
+              "optional": true,
+              "defaultValue": -1
+            },
+            {
+              "name": "protocol",
+              "doc": "the name of the sub-protocol used",
+              "type": "String",
+              "optional": true,
+              "defaultValue": ""
+            }
+          ],
+          "name": "createDataChannel",
+          "doc": "Create a new data channel if data channel are supported"
+        },
+        {
+          "params": [
+            {
+              "name": "channelId",
+              "doc": "The channel identifier",
+              "type": "int"
+            }
+          ],
+          "name": "closeDataChannel",
+          "doc": "Close an opened data channel"
         }
       ],
       "events": [
         "OnIceCandidate",
         "OnIceGatheringDone",
-        "OnIceComponentStateChanged"
+        "OnIceComponentStateChanged",
+        "OnDataChannelOpened",
+        "OnDataChannelClosed"
       ]
     },
     {
@@ -542,6 +596,30 @@
       "extends": "Media",
       "name": "OnIceComponentStateChanged",
       "doc": "Notify about the change of an ICE component state."
+    },
+    {
+      "properties": [
+        {
+          "name": "channelId",
+          "doc": "The channel identifier",
+          "type": "int"
+        }
+      ],
+      "extends": "Media",
+      "name": "OnDataChannelOpened",
+      "doc": "Notify the creation of a new data channel."
+    },
+    {
+      "properties": [
+        {
+          "name": "channelId",
+          "doc": "The channel identifier",
+          "type": "int"
+        }
+      ],
+      "extends": "Media",
+      "name": "OnDataChannelClosed",
+      "doc": "Notify the destruction of a data channel."
     },
     {
       "properties": [],
