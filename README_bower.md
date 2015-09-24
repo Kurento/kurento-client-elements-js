@@ -2,10 +2,11 @@
 
 Copyright © 2013-2016 [Kurento]. Licensed under [LGPL v2.1 License].
 
-kurento-client-elements-js
+kurento-client-elements-bower
 ===============
 
-This repository host the auto-generated JavaScript client for [Kurento] module "elements".
+This repository host the auto-generated JavaScript client for [Kurento]
+module "elements" to be published in [Bower].
 
 Module "elements" description: Elements implementations for kurento media server
 
@@ -102,3 +103,4 @@ Before asking for support, please read first the [Kurento Netiquette Guidelines]
 [LGPL v2.1 License]: http://www.gnu.org/licenses/lgpl-2.1.html
 [NUBOMEDIA]: http://www.nubomedia.eu
 [StackOverflow]: http://stackoverflow.com/search?q=kurento
+[Bower]: http://bower.io/
