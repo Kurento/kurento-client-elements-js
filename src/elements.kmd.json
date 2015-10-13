@@ -404,7 +404,7 @@
     {
       "name": "RtpEndpoint",
       "doc": "Endpoint that provides bidirectional content delivery capabilities with remote networked peers through RTP protocol. An :rom:cls:`RtpEndpoint` contains paired sink and source :rom:cls:`MediaPad` for audio and video.",
-      "extends": "SdpEndpoint",
+      "extends": "BaseRtpEndpoint",
       "constructor": {
         "params": [
           {
