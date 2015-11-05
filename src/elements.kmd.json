@@ -411,6 +411,13 @@
             "name": "mediaPipeline",
             "doc": "the :rom:cls:`MediaPipeline` to which the endpoint belongs",
             "type": "MediaPipeline"
+          },
+          {
+            "name": "crypto",
+            "doc": "Crypto parameters",
+            "type": "SDES",
+            "optional": true,
+            "defaultValue": {}
           }
         ],
         "doc": "Builder for the :rom:cls:`RtpEndpoint`"
@@ -554,6 +561,36 @@
       ],
       "name": "MediaProfileSpecType",
       "doc": "Media Profile.\n\nCurrently WEBM and MP4 are supported."
+    },
+    {
+      "typeFormat": "ENUM",
+      "values": [
+        "AES_128_CM_HMAC_SHA1_32",
+        "AES_128_CM_HMAC_SHA1_80",
+        "AES_256_CM_HMAC_SHA1_32",
+        "AES_256_CM_HMAC_SHA1_80"
+      ],
+      "name": "CryptoSuite",
+      "doc": "Describes the encryption and authentication algorithms"
+    },
+    {
+      "typeFormat": "REGISTER",
+      "properties": [
+        {
+          "name": "key",
+          "doc": "The cryptographic master key. It should be 30 bytes length when AES_128_CM cipher is used or 46 bytes length for AES_256_CM cipher), If no key is provided a random one will be used",
+          "type": "String",
+          "optional": true
+        },
+        {
+          "name": "crypto",
+          "doc": "The crypto-suite used",
+          "type": "CryptoSuite",
+          "optional": true
+        }
+      ],
+      "name": "SDES",
+      "doc": "Security Descriptions for Media Streams"
     }
   ],
   "events": [
