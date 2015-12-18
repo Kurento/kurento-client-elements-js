@@ -421,7 +421,10 @@
           }
         ],
         "doc": "Builder for the :rom:cls:`RtpEndpoint`"
-      }
+      },
+      "events": [
+        "OnKeySoftLimit"
+      ]
     },
     {
       "name": "RecorderEndpoint",
@@ -658,6 +661,18 @@
       "extends": "Media",
       "name": "OnDataChannelClosed",
       "doc": "Notify the destruction of a data channel."
+    },
+    {
+      "properties": [
+        {
+          "name": "mediaType",
+          "doc": "The media stream",
+          "type": "MediaType"
+        }
+      ],
+      "extends": "Media",
+      "name": "OnKeySoftLimit",
+      "doc": "Emitted when encryption is used and any stream reached the soft key usage limit and will expire soon."
     },
     {
       "properties": [],
