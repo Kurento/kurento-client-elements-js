@@ -107,6 +107,12 @@
           "name": "turnUrl",
           "doc": "TURN server URL with this format: 'user:password@address:port(?transport=[udp|tcp|tls])'.\n'address' must be an IP (not a domain).\n'transport' is optional (UDP by default).",
           "type": "String"
+        },
+        {
+          "name": "ICECandidatePairs",
+          "doc": "The ICE candidate pair used by the ice library for each stream.",
+          "type": "IceCandidatePair[]",
+          "readOnly": true
         }
       ],
       "methods": [
@@ -184,7 +190,8 @@
         "OnIceGatheringDone",
         "OnIceComponentStateChanged",
         "OnDataChannelOpened",
-        "OnDataChannelClosed"
+        "OnDataChannelClosed",
+        "NewCandidatePairSelected"
       ]
     },
     {
@@ -576,6 +583,33 @@
       "typeFormat": "REGISTER",
       "properties": [
         {
+          "name": "streamID",
+          "doc": "Stream ID of the ice connection",
+          "type": "String"
+        },
+        {
+          "name": "componentID",
+          "doc": "Component ID of the ice connection",
+          "type": "int"
+        },
+        {
+          "name": "localCandidate",
+          "doc": "The local candidate used by the ice library.",
+          "type": "String"
+        },
+        {
+          "name": "remoteCandidate",
+          "doc": "The remote candidate used by the ice library.",
+          "type": "String"
+        }
+      ],
+      "name": "IceCandidatePair",
+      "doc": "The ICE candidate pair used by the ice library."
+    },
+    {
+      "typeFormat": "REGISTER",
+      "properties": [
+        {
           "name": "isSeekable",
           "doc": "Seek is possible in video source",
           "type": "boolean"
@@ -708,6 +742,18 @@
       "extends": "Media",
       "name": "OnDataChannelClosed",
       "doc": "Notify the destruction of a data channel."
+    },
+    {
+      "properties": [
+        {
+          "name": "candidatePair",
+          "doc": "The new pair of candidates",
+          "type": "IceCandidatePair"
+        }
+      ],
+      "extends": "Media",
+      "name": "NewCandidatePairSelected",
+      "doc": "Notify of the new pair of ICE candidates used by the ice library."
     },
     {
       "properties": [
