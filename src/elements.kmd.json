@@ -492,6 +492,11 @@
           "name": "record",
           "doc": "Starts storing media received through the :rom:cls:`MediaSink` pad"
         }
+      ],
+      "events": [
+        "Recording",
+        "Paused",
+        "Stopped"
       ]
     },
     {
@@ -772,6 +777,24 @@
       "extends": "Media",
       "name": "EndOfStream",
       "doc": "Event raised when the stream that the element sends out is finished."
+    },
+    {
+      "properties": [],
+      "extends": "Media",
+      "name": "Recording",
+      "doc": "Raised when the recoding effectively starts. ie: Media is received by the recorder once record method has been called."
+    },
+    {
+      "properties": [],
+      "extends": "Media",
+      "name": "Paused",
+      "doc": "Raised when the recorder goes to pause state"
+    },
+    {
+      "properties": [],
+      "extends": "Media",
+      "name": "Stopped",
+      "doc": "Raised when the recorder has been stopped and all the media has been written to storage."
     }
   ]
 }
