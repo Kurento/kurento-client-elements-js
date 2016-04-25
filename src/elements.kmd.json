@@ -113,6 +113,12 @@
           "doc": "The ICE candidate pair used by the ice library for each stream.",
           "type": "IceCandidatePair[]",
           "readOnly": true
+        },
+        {
+          "name": "IceConnectionState",
+          "doc": "The ICE connection state for all the connections.",
+          "type": "IceConnection[]",
+          "readOnly": true
         }
       ],
       "methods": [
@@ -615,6 +621,28 @@
       ],
       "name": "IceCandidatePair",
       "doc": "The ICE candidate pair used by the ice library."
+    },
+    {
+      "typeFormat": "REGISTER",
+      "properties": [
+        {
+          "name": "streamId",
+          "doc": "The ID of the stream",
+          "type": "String"
+        },
+        {
+          "name": "componentId",
+          "doc": "The ID of the component",
+          "type": "int"
+        },
+        {
+          "name": "state",
+          "doc": "The state of the component",
+          "type": "IceComponentState"
+        }
+      ],
+      "name": "IceConnection",
+      "doc": "The ICE connection state for a certain stream and component."
     },
     {
       "typeFormat": "REGISTER",
