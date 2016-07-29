@@ -88,6 +88,13 @@
             "type": "boolean",
             "optional": true,
             "defaultValue": false
+          },
+          {
+            "name": "certificateKeyType",
+            "doc": "Define the type of the certificate used in dtls",
+            "type": "CertificateKeyType",
+            "optional": true,
+            "defaultValue": "RSA"
           }
         ],
         "doc": "Builder for the :rom:cls:`WebRtcEndpoint`"
@@ -648,6 +655,15 @@
       ],
       "name": "IceConnection",
       "doc": "The ICE connection state for a certain stream and component."
+    },
+    {
+      "typeFormat": "ENUM",
+      "values": [
+        "RSA",
+        "ECDSA"
+      ],
+      "name": "CertificateKeyType",
+      "doc": "."
     },
     {
       "typeFormat": "REGISTER",
