@@ -914,13 +914,13 @@
       "properties": [],
       "extends": "Media",
       "name": "Paused",
-      "doc": "Fired when the recorder goes to pause state"
+      "doc": "@deprecated</br>Fired when the recorder goes to pause state"
     },
     {
       "properties": [],
       "extends": "Media",
       "name": "Stopped",
-      "doc": "Fired when the recorder has been stopped and all the media has been written to storage."
+      "doc": "@deprecated</br>Fired when the recorder has been stopped and all the media has been written to storage."
     }
   ]
 }
