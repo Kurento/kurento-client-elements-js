@@ -1,6 +1,6 @@
 {
   "name": "kurento-client-elements",
-  "version": "6.6.2-dev",
+  "version": "6.7.3-dev",
   "description": "Elements implementations for kurento media server",
   "main": "lib/index.js",
   "repository": {
