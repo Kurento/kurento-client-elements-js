@@ -13,7 +13,7 @@ kurento-client-elements-bower
 This repository host the auto-generated JavaScript client for [Kurento]
 module "elements" to be published in [Bower].
 
-Module "elements" description: Elements implementations for kurento media server
+Module "elements" description: JavaScript Client API for Kurento Media Server
 
 What is Kurento
 ---------------

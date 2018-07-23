@@ -1,17 +1,17 @@
 {
   "name": "kurento-client-elements",
   "version": "6.7.3-dev",
-  "description": "Elements implementations for kurento media server",
-  "main": "lib/index.js",
+  "description": "JavaScript Client API for Kurento Media Server",
   "repository": {
     "type": "git",
-    "url": "Kurento/kurento-client-elements-js"
+    "url": "https://github.com/Kurento/kurento-client-elements-js.git"
   },
   "keywords": [
     "Kurento",
     "module",
     "plugin"
   ],
+  "main": "lib/index.js",
   "license": "ALv2",
   "homepage": "http://www.kurento.com",
   "author": "Kurento <info@kurento.com> (http://kurento.org)",
