@@ -39,6 +39,155 @@
   },
   "remoteClasses": [
     {
+      "name": "DispatcherOneToMany",
+      "doc": "A :rom:cls:`Hub` that sends a given source to all the connected sinks",
+      "extends": "Hub",
+      "constructor": {
+        "params": [
+          {
+            "name": "mediaPipeline",
+            "doc": "the :rom:cls:`MediaPipeline` to which the dispatcher belongs",
+            "type": "MediaPipeline"
+          }
+        ],
+        "doc": "Create a :rom:cls:`DispatcherOneToMany` belonging to the given pipeline."
+      },
+      "methods": [
+        {
+          "params": [
+            {
+              "name": "source",
+              "doc": "source to be broadcasted",
+              "type": "HubPort"
+            }
+          ],
+          "name": "setSource",
+          "doc": "Sets the source port that will be connected to the sinks of every :rom:cls:`HubPort` of the dispatcher"
+        },
+        {
+          "params": [],
+          "name": "removeSource",
+          "doc": "Remove the source port and stop the media pipeline."
+        }
+      ]
+    },
+    {
+      "name": "RecorderEndpoint",
+      "doc": "<p>\n      Provides the functionality to store contents. The recorder can store in local files or in a network resource. It receives a media stream from another MediaElement (i.e. the source), and stores it in the designated location.\n      </p>\n      <p>\n      The following information has to be provided In order to create a RecorderEndpoint, and can’t be changed afterwards:\n      <ul>\n        <li>\n          URI of the resource where media will be stored. Following schemas are supported:\n          <ul>\n            <li>\n              Files: mounted in the local file system.\n              <ul>\n                <li>file://<path-to-file></li>\n              </ul>\n            <li>\n              HTTP: Requires the server to support method PUT\n              <ul>\n                <li>\n                  http(s)://<server-ip>/path/to/file\n                </li>\n                <li>\n                  http(s)://username:password@<server-ip>/path/to/file\n                </li>\n              </ul>\n            </li>\n          </ul>\n        </li>\n        <li>\n          Relative URIs (with no schema) are supported. They are completed prepending a default URI defined by property defaultPath. This property allows using relative paths instead of absolute paths. If a relative path is provided, defaultPath will be prepended. This property is defined in the configuration file /etc/kurento/modules/kurento/UriEndpoint.conf.ini, and the default value is file:///var/kurento/\n        </li>\n        <li>\n          The media profile used to store the file. This will determine the encoding. See below for more details about media profile\n        </li>\n        <li>\n          Optionally, the user can select if the endpoint will stop processing once the EndOfStream event is detected.\n        </li>\n      </ul>\n      <p>\n      </p>\n      RecorderEndpoint requires access to the resource where stream is going to be recorded. If it’s a local file (file://), the system user running the media server daemon (kurento by default), needs to have write permissions for that URI. If it’s an HTTP server, it must be accessible from the machine where media server is running, and also have the correct access rights. Otherwise, the media server won’t be able to store any information, and an ErrorEvent will be fired. Please note that if you haven't subscribed to that type of event, you can be left wondering why your media is not being saved, while the error message was ignored.\n      <p>\n      </p>\n      The media profile is quite an important parameter, as it will determine whether there is a transcodification or not. If the input stream codec if not compatible with the selected media profile, the media will be transcoded into a suitable format, before arriving at the RecorderEndpoint's sink pad. This will result in a higher CPU load and will impact overall performance of the media server. For instance, if a VP8 encoded video received through a WebRTC endpoint arrives at the RecorderEndpoint, depending on the format configured in the recorder:\n      <ul>\n        <li>WEBM: No transcodification will take place.</li>\n        <li>MP4: The media server will have to transcode the media received from VP8 to H264. This will raise the CPU load in the system.</li>\n      </ul>\n      <p>\n      </p>\n      Recording will start as soon as the user invokes the record method. The recorder will then store, in the location indicated, the media that the source is sending to the endpoint’s sink. If no media is being received, or no endpoint has been connected, then the destination will be empty. The recorder starts storing information into the file as soon as it gets it.\n      <p>\n      </p>\n      When another endpoint is connected to the recorder, by default both AUDIO and VIDEO media types are expected, unless specified otherwise when invoking the connect method. Failing to provide both types, will result in teh recording buffering the received media: it won’t be written to the file until the recording is stopped. This is due to the recorder waiting for the other type of media to arrive, so they are synchronised.\n      <p>\n      </p>\n      The source endpoint can be hot-swapped, while the recording is taking place. The recorded file will then contain different feeds. When switching video sources, if the new video has different size, the recorder will retain the size of the previous source. If the source is disconnected, the last frame recorded will be shown for the duration of the disconnection, or until the recording is stopped.\n      <p>\n      </p>\n      It is recommended to start recording only after media arrives, either to the endpoint that is the source of the media connected to the recorder, to the recorder itself, or both. Users may use the MediaFlowIn and MediaFlowOut events, and synchronise the recording with the moment media comes in. In any case, nothing will be stored in the file until the first media packets arrive.\n      <p>\n      </p>\n      Stopping the recording process is done through the stopAndWait method, which will return only after all the information was stored correctly. If the file is empty, this means that no media arrived at the recorder.\n      </p>",
+      "extends": "UriEndpoint",
+      "constructor": {
+        "params": [
+          {
+            "name": "mediaPipeline",
+            "doc": "the :rom:cls:`MediaPipeline` to which the endpoint belongs",
+            "type": "MediaPipeline"
+          },
+          {
+            "name": "uri",
+            "doc": "URI where the recording will be stored. It has to be accessible to the KMS process.\n              <ul>\n                <li>Local server resources: The user running the Kurento Media Server must have write permission over the file.</li>\n                <li>Network resources: Must be accessible from the server where the media server is running.</li>\n              </ul>",
+            "type": "String"
+          },
+          {
+            "name": "mediaProfile",
+            "doc": "Sets the media profile used for recording. If the profile is different than the one being recieved at the sink pad, media will be trnascoded, resulting in a higher CPU load. For instance, when recording a VP8 encoded video from a WebRTC endpoint in MP4, the load is higher that when recording in WEBM.",
+            "type": "MediaProfileSpecType",
+            "optional": true,
+            "defaultValue": "WEBM"
+          },
+          {
+            "name": "stopOnEndOfStream",
+            "doc": "Forces the recorder endpoint to finish processing data when an :term:`EOS` is detected in the stream",
+            "type": "boolean",
+            "optional": true,
+            "defaultValue": false
+          }
+        ],
+        "doc": ""
+      },
+      "methods": [
+        {
+          "params": [],
+          "name": "record",
+          "doc": "Starts storing media received through the sink pad."
+        },
+        {
+          "params": [],
+          "name": "stopAndWait",
+          "doc": "Stops recording and does not return until all the content has been written to the selected uri. This can cause timeouts on some clients if there is too much content to write, or the transport is slow"
+        }
+      ],
+      "events": [
+        "Recording",
+        "Paused",
+        "Stopped"
+      ]
+    },
+    {
+      "name": "Dispatcher",
+      "doc": "A :rom:cls:`Hub` that allows routing between arbitrary port pairs",
+      "extends": "Hub",
+      "constructor": {
+        "params": [
+          {
+            "name": "mediaPipeline",
+            "doc": "the :rom:cls:`MediaPipeline` to which the dispatcher belongs",
+            "type": "MediaPipeline"
+          }
+        ],
+        "doc": "Create a :rom:cls:`Dispatcher` belonging to the given pipeline."
+      },
+      "methods": [
+        {
+          "params": [
+            {
+              "name": "source",
+              "doc": "Source port to be connected",
+              "type": "HubPort"
+            },
+            {
+              "name": "sink",
+              "doc": "Sink port to be connected",
+              "type": "HubPort"
+            }
+          ],
+          "name": "connect",
+          "doc": "Connects each corresponding :rom:enum:`MediaType` of the given source port with the sink port."
+        }
+      ]
+    },
+    {
+      "name": "RtpEndpoint",
+      "doc": "Endpoint that provides bidirectional content delivery capabilities with remote networked peers through RTP or SRTP protocol. An :rom:cls:`RtpEndpoint` contains paired sink and source :rom:cls:`MediaPad` for audio and video. This endpoint inherits from :rom:cls:`BaseRtpEndpoint`.\n      </p>\n      <p>\n      In order to establish an RTP/SRTP communication, peers engage in an SDP negotiation process, where one of the peers (the offerer) sends an offer, while the other peer (the offeree) responds with an answer. This endpoint can function in both situations\n      <ul style='list-style-type:circle'>\n        <li>\n          As offerer: The negotiation process is initiated by the media server\n          <ul>\n            <li>KMS generates the SDP offer through the generateOffer method. This offer must then be sent to the remote peer (the offeree) through the signaling channel, for processing.</li>\n            <li>The remote peer process the Offer, and generates an Answer to this offer. The Answer is sent back to the media server.</li>\n            <li>Upon receiving the Answer, the endpoint must invoke the processAnswer method.</li>\n          </ul>\n        </li>\n        <li>\n          As offeree: The negotiation process is initiated by the remote peer\n          <ul>\n            <li>The remote peer, acting as offerer, generates an SDP offer and sends it to the WebRTC endpoint in Kurento.</li>\n            <li>The endpoint will process the Offer invoking the processOffer method. The result of this method will be a string, containing an SDP Answer.</li>\n            <li>The SDP Answer must be sent back to the offerer, so it can be processed.</li>\n          </ul>\n        </li>\n      </ul>\n      </p>\n      <p>\n      In case of unidirectional connections (i.e. only one peer is going to send media), the process is more simple, as only the emitter needs to process an SDP. On top of the information about media codecs and types, the SDP must contain the IP of the remote peer, and the port where it will be listening. This way, the SDP can be mangled without needing to go through the exchange process, as the receiving peer does not need to process any answer.\n      </p>\n      <p>\n      The user can set some bandwidth limits that will be used during the negotiation process.\n      The default bandwidth range of the endpoint is 100kbps-500kbps, but it can be changed separately for input/output directions and for audio/video streams.\n      <ul style='list-style-type:circle'>\n        <li>\n          Input bandwidth control mechanism: Configuration interval used to inform remote peer the range of bitrates that can be pushed into this RtpEndpoint object. These values are announced in the SDP.\n          <ul>\n            <li>\n              setMaxVideoRecvBandwidth: sets Max bitrate limits expected for received video stream.\n            </li>\n            <li>\n              setMaxAudioRecvBandwidth: sets Max bitrate limits expected for received audio stream.\n            </li>\n          </ul>\n        </li>\n        <li>\n          Output bandwidth control mechanism: Configuration interval used to control bitrate of the output video stream sent to remote peer. Remote peers can also announce bandwidth limitation in their SDPs (through the b=<modifier>:<value> tag). Kurento will always enforce bitrate limitations specified by the remote peer over internal configurations.\n          <ul>\n            <li>\n              setMaxVideoSendBandwidth: sets Max bitrate limits for video sent to remote peer.\n            </li>\n            <li>\n              setMinVideoSendBandwidth: sets Min bitrate limits for audio sent to remote peer.\n            </li>\n          </ul>\n        </li>\n      </ul>\n      All bandwidth control parameters must be changed before the SDP negotiation takes place, and can't be modified afterwards.\n      TODO: What happens if the b=as tag form the SDP has a lower value than the one set in setMinVideoSendBandwidth?\n      </p>\n      <p>\n      Take into consideration that setting a too high upper limit for the output bandwidth can be a reason for the local network connection to be overflooded.\n      </p>\n      ",
+      "extends": "BaseRtpEndpoint",
+      "constructor": {
+        "params": [
+          {
+            "name": "mediaPipeline",
+            "doc": "the :rom:cls:`MediaPipeline` to which the endpoint belongs",
+            "type": "MediaPipeline"
+          },
+          {
+            "name": "crypto",
+            "doc": "SDES-type param. If present, this parameter indicates that the communication will be encrypted. By default no encryption is used.",
+            "type": "SDES",
+            "optional": true,
+            "defaultValue": {}
+          },
+          {
+            "name": "useIpv6",
+            "doc": "This configures the endpoint to use IPv6 instead of IPv4.",
+            "type": "boolean",
+            "optional": true,
+            "defaultValue": false
+          }
+        ],
+        "doc": "Builder for the :rom:cls:`RtpEndpoint`"
+      },
+      "events": [
+        "OnKeySoftLimit"
+      ]
+    },
+    {
       "name": "HttpPostEndpoint",
       "doc": "An :rom:cls:`HttpPostEndpoint` contains SINK pads for AUDIO and VIDEO, which provide access to an HTTP file upload function\n\n   This type of endpoint provide unidirectional communications. Its :rom:cls:`MediaSources <MediaSource>` are accessed through the :term:`HTTP` POST method.",
       "extends": "HttpEndpoint",
@@ -88,8 +237,8 @@
       ]
     },
     {
-      "name": "DispatcherOneToMany",
-      "doc": "A :rom:cls:`Hub` that sends a given source to all the connected sinks",
+      "name": "Composite",
+      "doc": "A :rom:cls:`Hub` that mixes the :rom:attr:`MediaType.AUDIO` stream of its connected sources and constructs a grid with the :rom:attr:`MediaType.VIDEO` streams of its connected sources into its sink",
       "extends": "Hub",
       "constructor": {
         "params": [
@@ -99,24 +248,75 @@
             "type": "MediaPipeline"
           }
         ],
-        "doc": "Create a :rom:cls:`DispatcherOneToMany` belonging to the given pipeline."
+        "doc": "Create for the given pipeline"
+      }
+    },
+    {
+      "name": "AlphaBlending",
+      "doc": "A :rom:cls:`Hub` that mixes the :rom:attr:`MediaType.AUDIO` stream of its connected sources and constructs one output with :rom:attr:`MediaType.VIDEO` streams of its connected sources into its sink",
+      "extends": "Hub",
+      "constructor": {
+        "params": [
+          {
+            "name": "mediaPipeline",
+            "doc": "the :rom:cls:`MediaPipeline` to which the dispatcher belongs",
+            "type": "MediaPipeline"
+          }
+        ],
+        "doc": "Create for the given pipeline"
       },
       "methods": [
         {
           "params": [
             {
               "name": "source",
-              "doc": "source to be broadcasted",
+              "doc": "The reference to the HubPort setting as master port",
+              "type": "HubPort"
+            },
+            {
+              "name": "zOrder",
+              "doc": "The order in z to draw the master image",
+              "type": "int"
+            }
+          ],
+          "name": "setMaster",
+          "doc": "Sets the source port that will be the master entry to the mixer"
+        },
+        {
+          "params": [
+            {
+              "name": "relativeX",
+              "doc": "The x position relative to the master port. Values from 0 to 1 are accepted. The value 0, indicates the coordinate 0 in the master image.",
+              "type": "float"
+            },
+            {
+              "name": "relativeY",
+              "doc": "The y position relative to the master port. Values from 0 to 1 are accepted. The value 0, indicates the coordinate 0 in the master image.",
+              "type": "float"
+            },
+            {
+              "name": "zOrder",
+              "doc": "The order in z to draw the images. The greatest value of z is in the top.",
+              "type": "int"
+            },
+            {
+              "name": "relativeWidth",
+              "doc": "The image width relative to the master port width. Values from 0 to 1 are accepted.",
+              "type": "float"
+            },
+            {
+              "name": "relativeHeight",
+              "doc": "The image height relative to the master port height. Values from 0 to 1 are accepted.",
+              "type": "float"
+            },
+            {
+              "name": "port",
+              "doc": "The reference to the confingured port.",
               "type": "HubPort"
             }
           ],
-          "name": "setSource",
-          "doc": "Sets the source port that will be connected to the sinks of every :rom:cls:`HubPort` of the dispatcher"
-        },
-        {
-          "params": [],
-          "name": "removeSource",
-          "doc": "Remove the source port and stop the media pipeline."
+          "name": "setPortProperties",
+          "doc": "Configure the blending mode of one port."
         }
       ]
     },
@@ -180,19 +380,67 @@
       ]
     },
     {
-      "name": "Composite",
-      "doc": "A :rom:cls:`Hub` that mixes the :rom:attr:`MediaType.AUDIO` stream of its connected sources and constructs a grid with the :rom:attr:`MediaType.VIDEO` streams of its connected sources into its sink",
-      "extends": "Hub",
+      "name": "PlayerEndpoint",
+      "doc": "\n      <p>\n      Retrieves content from seekable or non-seekable sources, and injects them into :term:`KMS`, so they can be delivered to any Filter or Endpoint in the same MediaPipeline. Following URI schemas are supported:\n      <ul>\n        <li>\n          Files: Mounted in the local file system.\n          <ul><li>file:///path/to/file</li></ul>\n        </li>\n        <li>\n          RTSP: Those of IP cameras would be a good example.\n          <ul>\n            <li>rtsp://<server-ip></li>\n            <li>rtsp://username:password@<server-ip></li>\n          </ul>\n        </li>\n        <li>\n          HTTP: Any file available in an HTTP server\n          <ul>\n            <li>http(s)://<server-ip>/path/to/file</li>\n            <li>http(s)://username:password@<server-ip>/path/to/file</li>\n          </ul>\n        </li>\n      </ul>\n      </p>\n      <p>\n      For the player to stream the contents of the file, the server must have access to the resource. In case of local files, the user running the process must have read permissions over the file. For network resources, the path to the resource must be accessible: IP and port access not blocked, correct credentials, etc.The resource location can’t be changed after the player is created, and a new player should be created for streaming a different resource.\n      </p>\n      <p>\n      The list of valid operations is\n      <ul>\n        <li>*play*: starts streaming media. If invoked after pause, it will resume playback.</li>\n        <li>*stop*: stops streaming media. If play is invoked afterwards, the file will be streamed from the beginning.</li>\n        <li>*pause*: pauses media streaming. Play must be invoked in order to resume playback.</li>\n        <li>*seek*: If the source supports “jumps” in the timeline, then the PlayerEndpoint can\n          <ul>\n            <li>*setPosition*: allows to set the position in the file.</li>\n            <li>*getPosition*: returns the current position being streamed.</li>\n          </ul>\n        </li>\n      </ul>\n      </p>\n      <p>\n      <h2>Events fired:</h2>\n      <ul><li>EndOfStreamEvent: If the file is streamed completely.</li></ul>\n      </p>\n      ",
+      "extends": "UriEndpoint",
       "constructor": {
         "params": [
           {
             "name": "mediaPipeline",
-            "doc": "the :rom:cls:`MediaPipeline` to which the dispatcher belongs",
+            "doc": "The :rom:cls:`MediaPipeline` this PlayerEndpoint belongs to.",
             "type": "MediaPipeline"
+          },
+          {
+            "name": "uri",
+            "doc": "URI pointing to the video. It has to be accessible to the KMS process.\n              <ul>\n                <li>Local resources: The user running the Kurento Media Server must have read permission over the file.</li>\n                <li>Remote resources: Must be accessible from the server where the media server is running.</li>\n              </ul>",
+            "type": "String"
+          },
+          {
+            "name": "useEncodedMedia",
+            "doc": "Feed the input media as-is to the Media Pipeline, instead of first decoding it.\n              <p>\n              When this property is not enabled, the input media gets always decoded into a raw format before being processed by the rest of the Media Pipeline; this is done to ensure that Kurento is able to keep track of lost keyframes among other quality-control measurements. Of course, having to decode the media has a cost in terms of CPU usage, but ensures that the output streaming will be robust and reliable.\n              </p>\n              <p>\n              When this property is enabled, the explained behavior gets disabled. Instead, The endpoint will provide any input media directly to the Media Pipeline, without prior decoding. Enabling this mode of operation could have a severe effect on stability, because lost video keyframes will not be regenerated; however, avoiding a full cycle of decoding and encoding can be very useful for certain applications, because it improves performance by greatly reducing the CPU processing load.\n              </p>\n              <p>\n              Keep in mind that if this property is enabled, the original source media MUST already have an encoding format which is compatible with the destination target. For example: given a pipeline which uses this endpoint to read a file and then streams it to a WebRTC browser such as Chrome, then the file must already be encoded with a VP8 or H.264 codec profile which Chrome is able to decode. Note that for this example, most browsers don't support ANY combination of H.264 encoding options; instead, they tend to support only a very specific subset of the codec features (also known as 'profiles').\n              </p>\n              <p>\n              We strongly recommend to avoid using this option, because correct behavior cannot be guaranteed.\n              </p>\n              ",
+            "type": "boolean",
+            "optional": true,
+            "defaultValue": false
+          },
+          {
+            "name": "networkCache",
+            "doc": "When using RTSP sources: Amount of milliseconds to buffer",
+            "type": "int",
+            "optional": true,
+            "defaultValue": 2000
           }
         ],
-        "doc": "Create for the given pipeline"
-      }
+        "doc": "Create a PlayerEndpoint"
+      },
+      "properties": [
+        {
+          "name": "videoInfo",
+          "doc": "Returns info about the source being played",
+          "type": "VideoInfo",
+          "readOnly": true
+        },
+        {
+          "name": "elementGstreamerDot",
+          "doc": "Returns the GStreamer DOT string for this element's private pipeline",
+          "type": "String",
+          "readOnly": true
+        },
+        {
+          "name": "position",
+          "doc": "Get or set the actual position of the video in ms. .. note:: Setting the position only works for seekable videos",
+          "type": "int64"
+        }
+      ],
+      "methods": [
+        {
+          "params": [],
+          "name": "play",
+          "doc": "Starts reproducing the media, sending it to the :rom:cls:`MediaSource`. If the endpoint\n\n          has been connected to other endpoints, those will start receiving media."
+        }
+      ],
+      "events": [
+        "EndOfStream"
+      ]
     },
     {
       "name": "WebRtcEndpoint",
@@ -348,257 +596,90 @@
         "DataChannelClose",
         "NewCandidatePairSelected"
       ]
-    },
-    {
-      "name": "Dispatcher",
-      "doc": "A :rom:cls:`Hub` that allows routing between arbitrary port pairs",
-      "extends": "Hub",
-      "constructor": {
-        "params": [
-          {
-            "name": "mediaPipeline",
-            "doc": "the :rom:cls:`MediaPipeline` to which the dispatcher belongs",
-            "type": "MediaPipeline"
-          }
-        ],
-        "doc": "Create a :rom:cls:`Dispatcher` belonging to the given pipeline."
-      },
-      "methods": [
-        {
-          "params": [
-            {
-              "name": "source",
-              "doc": "Source port to be connected",
-              "type": "HubPort"
-            },
-            {
-              "name": "sink",
-              "doc": "Sink port to be connected",
-              "type": "HubPort"
-            }
-          ],
-          "name": "connect",
-          "doc": "Connects each corresponding :rom:enum:`MediaType` of the given source port with the sink port."
-        }
-      ]
-    },
-    {
-      "name": "RtpEndpoint",
-      "doc": "Endpoint that provides bidirectional content delivery capabilities with remote networked peers through RTP or SRTP protocol. An :rom:cls:`RtpEndpoint` contains paired sink and source :rom:cls:`MediaPad` for audio and video. This endpoint inherits from :rom:cls:`BaseRtpEndpoint`.\n      </p>\n      <p>\n      In order to establish an RTP/SRTP communication, peers engage in an SDP negotiation process, where one of the peers (the offerer) sends an offer, while the other peer (the offeree) responds with an answer. This endpoint can function in both situations\n      <ul style='list-style-type:circle'>\n        <li>\n          As offerer: The negotiation process is initiated by the media server\n          <ul>\n            <li>KMS generates the SDP offer through the generateOffer method. This offer must then be sent to the remote peer (the offeree) through the signaling channel, for processing.</li>\n            <li>The remote peer process the Offer, and generates an Answer to this offer. The Answer is sent back to the media server.</li>\n            <li>Upon receiving the Answer, the endpoint must invoke the processAnswer method.</li>\n          </ul>\n        </li>\n        <li>\n          As offeree: The negotiation process is initiated by the remote peer\n          <ul>\n            <li>The remote peer, acting as offerer, generates an SDP offer and sends it to the WebRTC endpoint in Kurento.</li>\n            <li>The endpoint will process the Offer invoking the processOffer method. The result of this method will be a string, containing an SDP Answer.</li>\n            <li>The SDP Answer must be sent back to the offerer, so it can be processed.</li>\n          </ul>\n        </li>\n      </ul>\n      </p>\n      <p>\n      In case of unidirectional connections (i.e. only one peer is going to send media), the process is more simple, as only the emitter needs to process an SDP. On top of the information about media codecs and types, the SDP must contain the IP of the remote peer, and the port where it will be listening. This way, the SDP can be mangled without needing to go through the exchange process, as the receiving peer does not need to process any answer.\n      </p>\n      <p>\n      The user can set some bandwidth limits that will be used during the negotiation process.\n      The default bandwidth range of the endpoint is 100kbps-500kbps, but it can be changed separately for input/output directions and for audio/video streams.\n      <ul style='list-style-type:circle'>\n        <li>\n          Input bandwidth control mechanism: Configuration interval used to inform remote peer the range of bitrates that can be pushed into this RtpEndpoint object. These values are announced in the SDP.\n          <ul>\n            <li>\n              setMaxVideoRecvBandwidth: sets Max bitrate limits expected for received video stream.\n            </li>\n            <li>\n              setMaxAudioRecvBandwidth: sets Max bitrate limits expected for received audio stream.\n            </li>\n          </ul>\n        </li>\n        <li>\n          Output bandwidth control mechanism: Configuration interval used to control bitrate of the output video stream sent to remote peer. Remote peers can also announce bandwidth limitation in their SDPs (through the b=<modifier>:<value> tag). Kurento will always enforce bitrate limitations specified by the remote peer over internal configurations.\n          <ul>\n            <li>\n              setMaxVideoSendBandwidth: sets Max bitrate limits for video sent to remote peer.\n            </li>\n            <li>\n              setMinVideoSendBandwidth: sets Min bitrate limits for audio sent to remote peer.\n            </li>\n          </ul>\n        </li>\n      </ul>\n      All bandwidth control parameters must be changed before the SDP negotiation takes place, and can't be modified afterwards.\n      TODO: What happens if the b=as tag form the SDP has a lower value than the one set in setMinVideoSendBandwidth?\n      </p>\n      <p>\n      Take into consideration that setting a too high upper limit for the output bandwidth can be a reason for the local network connection to be overflooded.\n      </p>\n      ",
-      "extends": "BaseRtpEndpoint",
-      "constructor": {
-        "params": [
-          {
-            "name": "mediaPipeline",
-            "doc": "the :rom:cls:`MediaPipeline` to which the endpoint belongs",
-            "type": "MediaPipeline"
-          },
-          {
-            "name": "crypto",
-            "doc": "SDES-type param. If present, this parameter indicates that the communication will be encrypted. By default no encryption is used.",
-            "type": "SDES",
-            "optional": true,
-            "defaultValue": {}
-          },
-          {
-            "name": "useIpv6",
-            "doc": "This configures the endpoint to use IPv6 instead of IPv4.",
-            "type": "boolean",
-            "optional": true,
-            "defaultValue": false
-          }
-        ],
-        "doc": "Builder for the :rom:cls:`RtpEndpoint`"
-      },
-      "events": [
-        "OnKeySoftLimit"
-      ]
-    },
-    {
-      "name": "PlayerEndpoint",
-      "doc": "\n      <p>\n      Retrieves content from seekable or non-seekable sources, and injects them into :term:`KMS`, so they can be delivered to any Filter or Endpoint in the same MediaPipeline. Following URI schemas are supported:\n      <ul>\n        <li>\n          Files: Mounted in the local file system.\n          <ul><li>file:///path/to/file</li></ul>\n        </li>\n        <li>\n          RTSP: Those of IP cameras would be a good example.\n          <ul>\n            <li>rtsp://<server-ip></li>\n            <li>rtsp://username:password@<server-ip></li>\n          </ul>\n        </li>\n        <li>\n          HTTP: Any file available in an HTTP server\n          <ul>\n            <li>http(s)://<server-ip>/path/to/file</li>\n            <li>http(s)://username:password@<server-ip>/path/to/file</li>\n          </ul>\n        </li>\n      </ul>\n      </p>\n      <p>\n      For the player to stream the contents of the file, the server must have access to the resource. In case of local files, the user running the process must have read permissions over the file. For network resources, the path to the resource must be accessible: IP and port access not blocked, correct credentials, etc.The resource location can’t be changed after the player is created, and a new player should be created for streaming a different resource.\n      </p>\n      <p>\n      The list of valid operations is\n      <ul>\n        <li>*play*: starts streaming media. If invoked after pause, it will resume playback.</li>\n        <li>*stop*: stops streaming media. If play is invoked afterwards, the file will be streamed from the beginning.</li>\n        <li>*pause*: pauses media streaming. Play must be invoked in order to resume playback.</li>\n        <li>*seek*: If the source supports “jumps” in the timeline, then the PlayerEndpoint can\n          <ul>\n            <li>*setPosition*: allows to set the position in the file.</li>\n            <li>*getPosition*: returns the current position being streamed.</li>\n          </ul>\n        </li>\n      </ul>\n      </p>\n      <p>\n      <h2>Events fired:</h2>\n      <ul><li>EndOfStreamEvent: If the file is streamed completely.</li></ul>\n      </p>\n      ",
-      "extends": "UriEndpoint",
-      "constructor": {
-        "params": [
-          {
-            "name": "mediaPipeline",
-            "doc": "The :rom:cls:`MediaPipeline` this PlayerEndpoint belongs to.",
-            "type": "MediaPipeline"
-          },
-          {
-            "name": "uri",
-            "doc": "URI pointing to the video. It has to be accessible to the KMS process.\n              <ul>\n                <li>Local resources: The user running the Kurento Media Server must have read permission over the file.</li>\n                <li>Remote resources: Must be accessible from the server where the media server is running.</li>\n              </ul>",
-            "type": "String"
-          },
-          {
-            "name": "useEncodedMedia",
-            "doc": "Feed the input media as-is to the Media Pipeline, instead of first decoding it.\n              <p>\n              When this property is not enabled, the input media gets always decoded into a raw format before being processed by the rest of the Media Pipeline; this is done to ensure that Kurento is able to keep track of lost keyframes among other quality-control measurements. Of course, having to decode the media has a cost in terms of CPU usage, but ensures that the output streaming will be robust and reliable.\n              </p>\n              <p>\n              When this property is enabled, the explained behavior gets disabled. Instead, The endpoint will provide any input media directly to the Media Pipeline, without prior decoding. Enabling this mode of operation could have a severe effect on stability, because lost video keyframes will not be regenerated; however, avoiding a full cycle of decoding and encoding can be very useful for certain applications, because it improves performance by greatly reducing the CPU processing load.\n              </p>\n              <p>\n              Keep in mind that if this property is enabled, the original source media MUST already have an encoding format which is compatible with the destination target. For example: given a pipeline which uses this endpoint to read a file and then streams it to a WebRTC browser such as Chrome, then the file must already be encoded with a VP8 or H.264 codec profile which Chrome is able to decode. Note that for this example, most browsers don't support ANY combination of H.264 encoding options; instead, they tend to support only a very specific subset of the codec features (also known as 'profiles').\n              </p>\n              <p>\n              We strongly recommend to avoid using this option, because correct behavior cannot be guaranteed.\n              </p>\n              ",
-            "type": "boolean",
-            "optional": true,
-            "defaultValue": false
-          },
-          {
-            "name": "networkCache",
-            "doc": "When using RTSP sources: Amount of milliseconds to buffer",
-            "type": "int",
-            "optional": true,
-            "defaultValue": 2000
-          }
-        ],
-        "doc": "Create a PlayerEndpoint"
-      },
-      "properties": [
-        {
-          "name": "videoInfo",
-          "doc": "Returns info about the source being played",
-          "type": "VideoInfo",
-          "readOnly": true
-        },
-        {
-          "name": "elementGstreamerDot",
-          "doc": "Returns the GStreamer DOT string for this element's private pipeline",
-          "type": "String",
-          "readOnly": true
-        },
-        {
-          "name": "position",
-          "doc": "Get or set the actual position of the video in ms. .. note:: Setting the position only works for seekable videos",
-          "type": "int64"
-        }
-      ],
-      "methods": [
-        {
-          "params": [],
-          "name": "play",
-          "doc": "Starts reproducing the media, sending it to the :rom:cls:`MediaSource`. If the endpoint\n\n          has been connected to other endpoints, those will start receiving media."
-        }
-      ],
-      "events": [
-        "EndOfStream"
-      ]
-    },
-    {
-      "name": "AlphaBlending",
-      "doc": "A :rom:cls:`Hub` that mixes the :rom:attr:`MediaType.AUDIO` stream of its connected sources and constructs one output with :rom:attr:`MediaType.VIDEO` streams of its connected sources into its sink",
-      "extends": "Hub",
-      "constructor": {
-        "params": [
-          {
-            "name": "mediaPipeline",
-            "doc": "the :rom:cls:`MediaPipeline` to which the dispatcher belongs",
-            "type": "MediaPipeline"
-          }
-        ],
-        "doc": "Create for the given pipeline"
-      },
-      "methods": [
-        {
-          "params": [
-            {
-              "name": "source",
-              "doc": "The reference to the HubPort setting as master port",
-              "type": "HubPort"
-            },
-            {
-              "name": "zOrder",
-              "doc": "The order in z to draw the master image",
-              "type": "int"
-            }
-          ],
-          "name": "setMaster",
-          "doc": "Sets the source port that will be the master entry to the mixer"
-        },
-        {
-          "params": [
-            {
-              "name": "relativeX",
-              "doc": "The x position relative to the master port. Values from 0 to 1 are accepted. The value 0, indicates the coordinate 0 in the master image.",
-              "type": "float"
-            },
-            {
-              "name": "relativeY",
-              "doc": "The y position relative to the master port. Values from 0 to 1 are accepted. The value 0, indicates the coordinate 0 in the master image.",
-              "type": "float"
-            },
-            {
-              "name": "zOrder",
-              "doc": "The order in z to draw the images. The greatest value of z is in the top.",
-              "type": "int"
-            },
-            {
-              "name": "relativeWidth",
-              "doc": "The image width relative to the master port width. Values from 0 to 1 are accepted.",
-              "type": "float"
-            },
-            {
-              "name": "relativeHeight",
-              "doc": "The image height relative to the master port height. Values from 0 to 1 are accepted.",
-              "type": "float"
-            },
-            {
-              "name": "port",
-              "doc": "The reference to the confingured port.",
-              "type": "HubPort"
-            }
-          ],
-          "name": "setPortProperties",
-          "doc": "Configure the blending mode of one port."
-        }
-      ]
-    },
-    {
-      "name": "RecorderEndpoint",
-      "doc": "<p>\n      Provides the functionality to store contents. The recorder can store in local files or in a network resource. It receives a media stream from another MediaElement (i.e. the source), and stores it in the designated location.\n      </p>\n      <p>\n      The following information has to be provided In order to create a RecorderEndpoint, and can’t be changed afterwards:\n      <ul>\n        <li>\n          URI of the resource where media will be stored. Following schemas are supported:\n          <ul>\n            <li>\n              Files: mounted in the local file system.\n              <ul>\n                <li>file://<path-to-file></li>\n              </ul>\n            <li>\n              HTTP: Requires the server to support method PUT\n              <ul>\n                <li>\n                  http(s)://<server-ip>/path/to/file\n                </li>\n                <li>\n                  http(s)://username:password@<server-ip>/path/to/file\n                </li>\n              </ul>\n            </li>\n          </ul>\n        </li>\n        <li>\n          Relative URIs (with no schema) are supported. They are completed prepending a default URI defined by property defaultPath. This property allows using relative paths instead of absolute paths. If a relative path is provided, defaultPath will be prepended. This property is defined in the configuration file /etc/kurento/modules/kurento/UriEndpoint.conf.ini, and the default value is file:///var/kurento/\n        </li>\n        <li>\n          The media profile used to store the file. This will determine the encoding. See below for more details about media profile\n        </li>\n        <li>\n          Optionally, the user can select if the endpoint will stop processing once the EndOfStream event is detected.\n        </li>\n      </ul>\n      <p>\n      </p>\n      RecorderEndpoint requires access to the resource where stream is going to be recorded. If it’s a local file (file://), the system user running the media server daemon (kurento by default), needs to have write permissions for that URI. If it’s an HTTP server, it must be accessible from the machine where media server is running, and also have the correct access rights. Otherwise, the media server won’t be able to store any information, and an ErrorEvent will be fired. Please note that if you haven't subscribed to that type of event, you can be left wondering why your media is not being saved, while the error message was ignored.\n      <p>\n      </p>\n      The media profile is quite an important parameter, as it will determine whether there is a transcodification or not. If the input stream codec if not compatible with the selected media profile, the media will be transcoded into a suitable format, before arriving at the RecorderEndpoint's sink pad. This will result in a higher CPU load and will impact overall performance of the media server. For instance, if a VP8 encoded video received through a WebRTC endpoint arrives at the RecorderEndpoint, depending on the format configured in the recorder:\n      <ul>\n        <li>WEBM: No transcodification will take place.</li>\n        <li>MP4: The media server will have to transcode the media received from VP8 to H264. This will raise the CPU load in the system.</li>\n      </ul>\n      <p>\n      </p>\n      Recording will start as soon as the user invokes the record method. The recorder will then store, in the location indicated, the media that the source is sending to the endpoint’s sink. If no media is being received, or no endpoint has been connected, then the destination will be empty. The recorder starts storing information into the file as soon as it gets it.\n      <p>\n      </p>\n      When another endpoint is connected to the recorder, by default both AUDIO and VIDEO media types are expected, unless specified otherwise when invoking the connect method. Failing to provide both types, will result in teh recording buffering the received media: it won’t be written to the file until the recording is stopped. This is due to the recorder waiting for the other type of media to arrive, so they are synchronised.\n      <p>\n      </p>\n      The source endpoint can be hot-swapped, while the recording is taking place. The recorded file will then contain different feeds. When switching video sources, if the new video has different size, the recorder will retain the size of the previous source. If the source is disconnected, the last frame recorded will be shown for the duration of the disconnection, or until the recording is stopped.\n      <p>\n      </p>\n      It is recommended to start recording only after media arrives, either to the endpoint that is the source of the media connected to the recorder, to the recorder itself, or both. Users may use the MediaFlowIn and MediaFlowOut events, and synchronise the recording with the moment media comes in. In any case, nothing will be stored in the file until the first media packets arrive.\n      <p>\n      </p>\n      Stopping the recording process is done through the stopAndWait method, which will return only after all the information was stored correctly. If the file is empty, this means that no media arrived at the recorder.\n      </p>",
-      "extends": "UriEndpoint",
-      "constructor": {
-        "params": [
-          {
-            "name": "mediaPipeline",
-            "doc": "the :rom:cls:`MediaPipeline` to which the endpoint belongs",
-            "type": "MediaPipeline"
-          },
-          {
-            "name": "uri",
-            "doc": "URI where the recording will be stored. It has to be accessible to the KMS process.\n              <ul>\n                <li>Local server resources: The user running the Kurento Media Server must have write permission over the file.</li>\n                <li>Network resources: Must be accessible from the server where the media server is running.</li>\n              </ul>",
-            "type": "String"
-          },
-          {
-            "name": "mediaProfile",
-            "doc": "Sets the media profile used for recording. If the profile is different than the one being recieved at the sink pad, media will be trnascoded, resulting in a higher CPU load. For instance, when recording a VP8 encoded video from a WebRTC endpoint in MP4, the load is higher that when recording in WEBM.",
-            "type": "MediaProfileSpecType",
-            "optional": true,
-            "defaultValue": "WEBM"
-          },
-          {
-            "name": "stopOnEndOfStream",
-            "doc": "Forces the recorder endpoint to finish processing data when an :term:`EOS` is detected in the stream",
-            "type": "boolean",
-            "optional": true,
-            "defaultValue": false
-          }
-        ],
-        "doc": ""
-      },
-      "methods": [
-        {
-          "params": [],
-          "name": "record",
-          "doc": "Starts storing media received through the sink pad."
-        },
-        {
-          "params": [],
-          "name": "stopAndWait",
-          "doc": "Stops recording and does not return until all the content has been written to the selected uri. This can cause timeouts on some clients if there is too much content to write, or the transport is slow"
-        }
-      ],
-      "events": [
-        "Recording",
-        "Paused",
-        "Stopped"
-      ]
     }
   ],
   "complexTypes": [
+    {
+      "typeFormat": "ENUM",
+      "values": [
+        "AES_128_CM_HMAC_SHA1_32",
+        "AES_128_CM_HMAC_SHA1_80",
+        "AES_256_CM_HMAC_SHA1_32",
+        "AES_256_CM_HMAC_SHA1_80"
+      ],
+      "name": "CryptoSuite",
+      "doc": "Describes the encryption and authentication algorithms"
+    },
+    {
+      "typeFormat": "REGISTER",
+      "properties": [
+        {
+          "name": "key",
+          "doc": "<p>Master key and salt (plain text)</p>\n          <p>\n          This field provides the the cryptographic master key appended with the master salt, in plain text format. This allows to provide a key that is composed of readable ASCII characters.\n          </p>\n          <p>\n          The expected length of the key (as provided to this parameter) is determined by the crypto-suite for which the key applies (30 characters for AES_CM_128, 46 characters for AES_CM_256). If the length does not match the expected value, the key will be considered invalid.\n          </p>\n          <p>\n          If no key is provided, a random one will be generated using the `getrandom` system call.\n          </p>",
+          "type": "String",
+          "optional": true
+        },
+        {
+          "name": "keyBase64",
+          "doc": "<p>Master key and salt (base64 encoded)</p>\n          <p>\n          This field provides the cryptographic master key appended with the master salt, encoded in base64. This allows to provide a binary key that is not limited to the ASCII character set.\n          </p>\n          <p>\n          The expected length of the key (after being decoded from base64) is determined by the crypto-suite for which the key applies (30 bytes for AES_CM_128, 46 bytes for AES_CM_256). If the length does not match the expected value, the key will be considered invalid.\n          </p>\n          <p>\n          If no key is provided, a random one will be generated using the `getrandom` system call.\n          </p>",
+          "type": "String",
+          "optional": true
+        },
+        {
+          "name": "crypto",
+          "doc": "Selects the cryptographic suite to be used. For available values, please see the CryptoSuite enum.",
+          "type": "CryptoSuite",
+          "optional": true
+        }
+      ],
+      "name": "SDES",
+      "doc": "Security Descriptions for Media Streams"
+    },
+    {
+      "typeFormat": "ENUM",
+      "values": [
+        "WEBM",
+        "MKV",
+        "MP4",
+        "WEBM_VIDEO_ONLY",
+        "WEBM_AUDIO_ONLY",
+        "MKV_VIDEO_ONLY",
+        "MKV_AUDIO_ONLY",
+        "MP4_VIDEO_ONLY",
+        "MP4_AUDIO_ONLY",
+        "JPEG_VIDEO_ONLY",
+        "KURENTO_SPLIT_RECORDER"
+      ],
+      "name": "MediaProfileSpecType",
+      "doc": "Media Profile.\n\nCurrently WEBM, MKV, MP4 and JPEG are supported."
+    },
+    {
+      "typeFormat": "REGISTER",
+      "properties": [
+        {
+          "name": "isSeekable",
+          "doc": "Seek is possible in video source",
+          "type": "boolean"
+        },
+        {
+          "name": "seekableInit",
+          "doc": "First video position to do seek in ms",
+          "type": "int64"
+        },
+        {
+          "name": "seekableEnd",
+          "doc": "Last video position to do seek in ms",
+          "type": "int64"
+        },
+        {
+          "name": "duration",
+          "doc": "Video duration in ms",
+          "type": "int64"
+        }
+      ],
+      "name": "VideoInfo",
+      "doc": ""
+    },
     {
       "typeFormat": "REGISTER",
       "properties": [
@@ -691,90 +772,45 @@
       ],
       "name": "CertificateKeyType",
       "doc": "."
-    },
-    {
-      "typeFormat": "ENUM",
-      "values": [
-        "WEBM",
-        "MKV",
-        "MP4",
-        "WEBM_VIDEO_ONLY",
-        "WEBM_AUDIO_ONLY",
-        "MKV_VIDEO_ONLY",
-        "MKV_AUDIO_ONLY",
-        "MP4_VIDEO_ONLY",
-        "MP4_AUDIO_ONLY",
-        "JPEG_VIDEO_ONLY",
-        "KURENTO_SPLIT_RECORDER"
-      ],
-      "name": "MediaProfileSpecType",
-      "doc": "Media Profile.\n\nCurrently WEBM, MKV, MP4 and JPEG are supported."
-    },
-    {
-      "typeFormat": "ENUM",
-      "values": [
-        "AES_128_CM_HMAC_SHA1_32",
-        "AES_128_CM_HMAC_SHA1_80",
-        "AES_256_CM_HMAC_SHA1_32",
-        "AES_256_CM_HMAC_SHA1_80"
-      ],
-      "name": "CryptoSuite",
-      "doc": "Describes the encryption and authentication algorithms"
-    },
-    {
-      "typeFormat": "REGISTER",
-      "properties": [
-        {
-          "name": "key",
-          "doc": "<p>Master key and salt (plain text)</p>\n          <p>\n          This field provides the the cryptographic master key appended with the master salt, in plain text format. This allows to provide a key that is composed of readable ASCII characters.\n          </p>\n          <p>\n          The expected length of the key (as provided to this parameter) is determined by the crypto-suite for which the key applies (30 characters for AES_CM_128, 46 characters for AES_CM_256). If the length does not match the expected value, the key will be considered invalid.\n          </p>\n          <p>\n          If no key is provided, a random one will be generated using the `getrandom` system call.\n          </p>",
-          "type": "String",
-          "optional": true
-        },
-        {
-          "name": "keyBase64",
-          "doc": "<p>Master key and salt (base64 encoded)</p>\n          <p>\n          This field provides the cryptographic master key appended with the master salt, encoded in base64. This allows to provide a binary key that is not limited to the ASCII character set.\n          </p>\n          <p>\n          The expected length of the key (after being decoded from base64) is determined by the crypto-suite for which the key applies (30 bytes for AES_CM_128, 46 bytes for AES_CM_256). If the length does not match the expected value, the key will be considered invalid.\n          </p>\n          <p>\n          If no key is provided, a random one will be generated using the `getrandom` system call.\n          </p>",
-          "type": "String",
-          "optional": true
-        },
-        {
-          "name": "crypto",
-          "doc": "Selects the cryptographic suite to be used. For available values, please see the CryptoSuite enum.",
-          "type": "CryptoSuite",
-          "optional": true
-        }
-      ],
-      "name": "SDES",
-      "doc": "Security Descriptions for Media Streams"
-    },
-    {
-      "typeFormat": "REGISTER",
-      "properties": [
-        {
-          "name": "isSeekable",
-          "doc": "Seek is possible in video source",
-          "type": "boolean"
-        },
-        {
-          "name": "seekableInit",
-          "doc": "First video position to do seek in ms",
-          "type": "int64"
-        },
-        {
-          "name": "seekableEnd",
-          "doc": "Last video position to do seek in ms",
-          "type": "int64"
-        },
-        {
-          "name": "duration",
-          "doc": "Video duration in ms",
-          "type": "int64"
-        }
-      ],
-      "name": "VideoInfo",
-      "doc": ""
     }
   ],
   "events": [
+    {
+      "properties": [],
+      "extends": "Media",
+      "name": "Recording",
+      "doc": "Fired when the recoding effectively starts. ie: Media is received by the recorder and record method has been called."
+    },
+    {
+      "properties": [],
+      "extends": "Media",
+      "name": "Paused",
+      "doc": "@deprecated</br>Fired when the recorder goes to pause state"
+    },
+    {
+      "properties": [],
+      "extends": "Media",
+      "name": "Stopped",
+      "doc": "@deprecated</br>Fired when the recorder has been stopped and all the media has been written to storage."
+    },
+    {
+      "properties": [
+        {
+          "name": "mediaType",
+          "doc": "The media stream",
+          "type": "MediaType"
+        }
+      ],
+      "extends": "Media",
+      "name": "OnKeySoftLimit",
+      "doc": "Fired when encryption is used and any stream reached the soft key usage limit, which means it will expire soon."
+    },
+    {
+      "properties": [],
+      "extends": "Media",
+      "name": "EndOfStream",
+      "doc": "Event raised when the stream that the element sends out is finished."
+    },
     {
       "properties": [
         {
@@ -914,42 +950,6 @@
       "extends": "Media",
       "name": "NewCandidatePairSelected",
       "doc": "Event fired when a new pair of ICE candidates is used by the ICE library. This could also happen in the middle of a session, though not likely."
-    },
-    {
-      "properties": [],
-      "extends": "Media",
-      "name": "EndOfStream",
-      "doc": "Event raised when the stream that the element sends out is finished."
-    },
-    {
-      "properties": [
-        {
-          "name": "mediaType",
-          "doc": "The media stream",
-          "type": "MediaType"
-        }
-      ],
-      "extends": "Media",
-      "name": "OnKeySoftLimit",
-      "doc": "Fired when encryption is used and any stream reached the soft key usage limit, which means it will expire soon."
-    },
-    {
-      "properties": [],
-      "extends": "Media",
-      "name": "Recording",
-      "doc": "Fired when the recoding effectively starts. ie: Media is received by the recorder and record method has been called."
-    },
-    {
-      "properties": [],
-      "extends": "Media",
-      "name": "Paused",
-      "doc": "@deprecated</br>Fired when the recorder goes to pause state"
-    },
-    {
-      "properties": [],
-      "extends": "Media",
-      "name": "Stopped",
-      "doc": "@deprecated</br>Fired when the recorder has been stopped and all the media has been written to storage."
     }
   ]
 }
