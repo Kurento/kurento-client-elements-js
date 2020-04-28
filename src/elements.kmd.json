@@ -610,6 +610,87 @@
   ],
   "complexTypes": [
     {
+      "typeFormat": "ENUM",
+      "values": [
+        "WEBM",
+        "MKV",
+        "MP4",
+        "WEBM_VIDEO_ONLY",
+        "WEBM_AUDIO_ONLY",
+        "MKV_VIDEO_ONLY",
+        "MKV_AUDIO_ONLY",
+        "MP4_VIDEO_ONLY",
+        "MP4_AUDIO_ONLY",
+        "JPEG_VIDEO_ONLY",
+        "KURENTO_SPLIT_RECORDER"
+      ],
+      "name": "MediaProfileSpecType",
+      "doc": "Media Profile.\n\nCurrently WEBM, MKV, MP4 and JPEG are supported."
+    },
+    {
+      "typeFormat": "ENUM",
+      "values": [
+        "AES_128_CM_HMAC_SHA1_32",
+        "AES_128_CM_HMAC_SHA1_80",
+        "AES_256_CM_HMAC_SHA1_32",
+        "AES_256_CM_HMAC_SHA1_80"
+      ],
+      "name": "CryptoSuite",
+      "doc": "Describes the encryption and authentication algorithms"
+    },
+    {
+      "typeFormat": "REGISTER",
+      "properties": [
+        {
+          "name": "key",
+          "doc": "<p>Master key and salt (plain text)</p>\n          <p>\n          This field provides the the cryptographic master key appended with the master salt, in plain text format. This allows to provide a key that is composed of readable ASCII characters.\n          </p>\n          <p>\n          The expected length of the key (as provided to this parameter) is determined by the crypto-suite for which the key applies (30 characters for AES_CM_128, 46 characters for AES_CM_256). If the length does not match the expected value, the key will be considered invalid.\n          </p>\n          <p>\n          If no key is provided, a random one will be generated using the `getrandom` system call.\n          </p>",
+          "type": "String",
+          "optional": true
+        },
+        {
+          "name": "keyBase64",
+          "doc": "<p>Master key and salt (base64 encoded)</p>\n          <p>\n          This field provides the cryptographic master key appended with the master salt, encoded in base64. This allows to provide a binary key that is not limited to the ASCII character set.\n          </p>\n          <p>\n          The expected length of the key (after being decoded from base64) is determined by the crypto-suite for which the key applies (30 bytes for AES_CM_128, 46 bytes for AES_CM_256). If the length does not match the expected value, the key will be considered invalid.\n          </p>\n          <p>\n          If no key is provided, a random one will be generated using the `getrandom` system call.\n          </p>",
+          "type": "String",
+          "optional": true
+        },
+        {
+          "name": "crypto",
+          "doc": "Selects the cryptographic suite to be used. For available values, please see the CryptoSuite enum.",
+          "type": "CryptoSuite",
+          "optional": true
+        }
+      ],
+      "name": "SDES",
+      "doc": "Security Descriptions for Media Streams"
+    },
+    {
+      "typeFormat": "REGISTER",
+      "properties": [
+        {
+          "name": "isSeekable",
+          "doc": "Seek is possible in video source",
+          "type": "boolean"
+        },
+        {
+          "name": "seekableInit",
+          "doc": "First video position to do seek in ms",
+          "type": "int64"
+        },
+        {
+          "name": "seekableEnd",
+          "doc": "Last video position to do seek in ms",
+          "type": "int64"
+        },
+        {
+          "name": "duration",
+          "doc": "Video duration in ms",
+          "type": "int64"
+        }
+      ],
+      "name": "VideoInfo",
+      "doc": ""
+    },
+    {
       "typeFormat": "REGISTER",
       "properties": [
         {
@@ -701,90 +782,21 @@
       ],
       "name": "CertificateKeyType",
       "doc": "."
-    },
-    {
-      "typeFormat": "ENUM",
-      "values": [
-        "AES_128_CM_HMAC_SHA1_32",
-        "AES_128_CM_HMAC_SHA1_80",
-        "AES_256_CM_HMAC_SHA1_32",
-        "AES_256_CM_HMAC_SHA1_80"
-      ],
-      "name": "CryptoSuite",
-      "doc": "Describes the encryption and authentication algorithms"
-    },
-    {
-      "typeFormat": "REGISTER",
-      "properties": [
-        {
-          "name": "key",
-          "doc": "<p>Master key and salt (plain text)</p>\n          <p>\n          This field provides the the cryptographic master key appended with the master salt, in plain text format. This allows to provide a key that is composed of readable ASCII characters.\n          </p>\n          <p>\n          The expected length of the key (as provided to this parameter) is determined by the crypto-suite for which the key applies (30 characters for AES_CM_128, 46 characters for AES_CM_256). If the length does not match the expected value, the key will be considered invalid.\n          </p>\n          <p>\n          If no key is provided, a random one will be generated using the `getrandom` system call.\n          </p>",
-          "type": "String",
-          "optional": true
-        },
-        {
-          "name": "keyBase64",
-          "doc": "<p>Master key and salt (base64 encoded)</p>\n          <p>\n          This field provides the cryptographic master key appended with the master salt, encoded in base64. This allows to provide a binary key that is not limited to the ASCII character set.\n          </p>\n          <p>\n          The expected length of the key (after being decoded from base64) is determined by the crypto-suite for which the key applies (30 bytes for AES_CM_128, 46 bytes for AES_CM_256). If the length does not match the expected value, the key will be considered invalid.\n          </p>\n          <p>\n          If no key is provided, a random one will be generated using the `getrandom` system call.\n          </p>",
-          "type": "String",
-          "optional": true
-        },
-        {
-          "name": "crypto",
-          "doc": "Selects the cryptographic suite to be used. For available values, please see the CryptoSuite enum.",
-          "type": "CryptoSuite",
-          "optional": true
-        }
-      ],
-      "name": "SDES",
-      "doc": "Security Descriptions for Media Streams"
-    },
-    {
-      "typeFormat": "ENUM",
-      "values": [
-        "WEBM",
-        "MKV",
-        "MP4",
-        "WEBM_VIDEO_ONLY",
-        "WEBM_AUDIO_ONLY",
-        "MKV_VIDEO_ONLY",
-        "MKV_AUDIO_ONLY",
-        "MP4_VIDEO_ONLY",
-        "MP4_AUDIO_ONLY",
-        "JPEG_VIDEO_ONLY",
-        "KURENTO_SPLIT_RECORDER"
-      ],
-      "name": "MediaProfileSpecType",
-      "doc": "Media Profile.\n\nCurrently WEBM, MKV, MP4 and JPEG are supported."
-    },
-    {
-      "typeFormat": "REGISTER",
-      "properties": [
-        {
-          "name": "isSeekable",
-          "doc": "Seek is possible in video source",
-          "type": "boolean"
-        },
-        {
-          "name": "seekableInit",
-          "doc": "First video position to do seek in ms",
-          "type": "int64"
-        },
-        {
-          "name": "seekableEnd",
-          "doc": "Last video position to do seek in ms",
-          "type": "int64"
-        },
-        {
-          "name": "duration",
-          "doc": "Video duration in ms",
-          "type": "int64"
-        }
-      ],
-      "name": "VideoInfo",
-      "doc": ""
     }
   ],
   "events": [
+    {
+      "properties": [
+        {
+          "name": "mediaType",
+          "doc": "The media stream",
+          "type": "MediaType"
+        }
+      ],
+      "extends": "Media",
+      "name": "OnKeySoftLimit",
+      "doc": "Fired when encryption is used and any stream reached the soft key usage limit, which means it will expire soon."
+    },
     {
       "properties": [
         {
@@ -942,18 +954,6 @@
       "extends": "Media",
       "name": "Stopped",
       "doc": "@deprecated</br>Fired when the recorder has been stopped and all the media has been written to storage."
-    },
-    {
-      "properties": [
-        {
-          "name": "mediaType",
-          "doc": "The media stream",
-          "type": "MediaType"
-        }
-      ],
-      "extends": "Media",
-      "name": "OnKeySoftLimit",
-      "doc": "Fired when encryption is used and any stream reached the soft key usage limit, which means it will expire soon."
     },
     {
       "properties": [],
