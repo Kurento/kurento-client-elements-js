@@ -486,11 +486,6 @@
       },
       "properties": [
         {
-          "name": "externalAddress",
-          "doc": "External (public) IP address of the media server.\n<p>\n  If you know what will be the external or public IP address of the media server\n  (e.g. because your deployment has an static IP), you can specify it here.\n  Doing so has the advantage of not needing to configure STUN/TURN for the media\n  server.\n</p>\n<p>\n  STUN/TURN are needed only when the media server sits behind a NAT and needs to\n  find out its own external IP address. However, if you set a static external IP\n  address with this parameter, then there is no need for the STUN/TURN\n  auto-discovery.\n</p>\n<p>\n  The effect of this parameter is that ALL local ICE candidates that are\n  gathered (for WebRTC) will contain the provided external IP address instead of\n  the local one.\n</p>\n<p>\n  <code>externalAddress</code> is an IPv4 or IPv6 address.\n</p>\n<p>Examples:</p>\n<ul>\n  <li><code>externalAddress=10.70.35.2</code></li>\n  <li><code>externalAddress=2001:0db8:85a3:0000:0000:8a2e:0370:7334</code></li>\n</ul>\n          ",
-          "type": "String"
-        },
-        {
           "name": "networkInterfaces",
           "doc": "Local network interfaces used for ICE gathering.\n<p>\n  If you know which network interfaces should be used to perform ICE (for WebRTC\n  connectivity), you can define them here. Doing so has several advantages:\n</p>\n<ul>\n  <li>\n    The WebRTC ICE gathering process will be much quicker. Normally, it needs to\n    gather local candidates for all of the network interfaces, but this step can\n    be made faster if you limit it to only the interface that you know will\n    work.\n  </li>\n  <li>\n    It will ensure that the media server always decides to use the correct\n    network interface. With WebRTC ICE gathering it's possible that, under some\n    circumstances (in systems with virtual network interfaces such as\n    <code>docker0</code>) the ICE process ends up choosing the wrong local IP.\n  </li>\n</ul>\n<p>\n  <code>networkInterfaces</code> is a comma-separated list of network interface\n  names.\n</p>\n<p>Examples:</p>\n<ul>\n  <li><code>networkInterfaces=eth0</code></li>\n  <li><code>networkInterfaces=eth0,enp0s25</code></li>\n</ul>\n          ",
           "type": "String"
@@ -508,6 +503,11 @@
         {
           "name": "turnUrl",
           "doc": "TURN server URL.\n<p>\n  When STUN is not enough to open connections through some NAT firewalls, using\n  TURN is the remaining alternative.\n</p>\n<p>\n  Note that TURN is a superset of STUN, so you don't need to configure STUN if\n  you are using TURN.\n</p>\n<p>The provided URL should follow one of these formats:</p>\n<ul>\n  <li><code>user:password@ipaddress:port</code></li>\n  <li>\n    <code>user:password@ipaddress:port?transport=[udp|tcp|tls]</code>\n  </li>\n</ul>\n<p>\n  <code>ipaddress</code> MUST be an IP address; domain names are NOT supported.<br />\n  <code>transport</code> is OPTIONAL. Possible values: udp, tcp, tls. Default: udp.\n</p>\n<p>\n  You need to use a well-working TURN server. Use this to check if it works:<br />\n  https://webrtc.github.io/samples/src/content/peerconnection/trickle-ice/<br />\n  From that check, you should get at least one Server-Reflexive Candidate (type\n  <code>srflx</code>) AND one Relay Candidate (type <code>relay</code>).\n</p>\n          ",
+          "type": "String"
+        },
+        {
+          "name": "externalAddress",
+          "doc": "External IP address of the media server.\n<p>\n  This setting is normally NOT needed. Only use it if you know what you're\n  doing, and understand 100% WHY you want it. For the majority of cases, you\n  should prefer configuring STUN or TURN servers over using this setting.\n</p>\n<p>\n  This setting implements a hack that will mangle all local ICE candidates so\n  that their candidate address is replaced with the provided external address,\n  even for candidates of type 'host'. In doing so, this KMS will not need a\n  STUN or TURN server, but remote peers will still be able to contact it.\n</p>\n<p>\n  You can try using this setting if KMS is deployed on a publicly accessible\n  server, without NAT, and with a static public IP address. But if it doesn't\n  work for you, just go back to using the STUN or TURN settings above.\n</p>\n<p>\n  <code>externalAddress</code> is an IPv4 or IPv6 address.\n</p>\n<p>Examples:</p>\n<ul>\n  <li><code>externalAddress=10.70.35.2</code></li>\n  <li><code>externalAddress=2001:0db8:85a3:0000:0000:8a2e:0370:7334</code></li>\n</ul>\n          ",
           "type": "String"
         },
         {
