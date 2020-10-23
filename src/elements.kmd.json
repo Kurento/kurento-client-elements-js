@@ -321,7 +321,7 @@
           },
           {
             "name": "networkCache",
-            "doc": "When using RTSP sources: Amount of milliseconds to buffer",
+            "doc": "RTSP buffer length.\n<p>\n  When receiving media from an RTSP source, the streamed video can suffer spikes\n  or stuttering, caused by hardware or network issues. Having a reception buffer\n  helps alleviate these problems, because it smoothes the stream of incoming\n  data to the receiving endpoint.\n</p>\n<p>\n  Finding a buffer length that works best for your connection might take some\n  tweaking, which can be done with this optional property. Note that a longer\n  buffer will be able to fix bigger network spikes, but at the cost of\n  introducing more latency to the media playback.\n</p>\n<ul>\n  <li>Unit: milliseconds.</li>\n  <li>Default: 2000.</li>\n</ul>\n              ",
             "type": "int",
             "optional": true,
             "defaultValue": 2000
@@ -506,8 +506,18 @@
           "type": "String"
         },
         {
+          "name": "externalIPv4",
+          "doc": "External IPv4 address of the media server.\n<p>\n  Forces all local IPv4 ICE candidates to have the given address. This is really\n  nothing more than a hack, but it's very effective to force a public IP address\n  when one is known in advance for the media server. In doing so, KMS will not\n  need a STUN or TURN server, but remote peers will still be able to contact it.\n</p>\n<p>\n  You can try using this setting if KMS is deployed on a publicly accessible\n  server, without NAT, and with a static public IP address. But if it doesn't\n  work for you, just go back to configuring a STUN or TURN server for ICE.\n</p>\n<p>\n  Only set this parameter if you know what you're doing, and you understand 100%\n  WHY you need it. For the majority of cases, you should just prefer to\n  configure a STUN or TURN server.\n</p>\n<p><code>externalIPv4</code> is a single IPv4 address.</p>\n<p>Example:</p>\n<ul>\n  <li><code>externalIPv4=198.51.100.1</code></li>\n</ul>\n          ",
+          "type": "String"
+        },
+        {
+          "name": "externalIPv6",
+          "doc": "External IPv6 address of the media server.\n<p>\n  Forces all local IPv6 ICE candidates to have the given address. This is really\n  nothing more than a hack, but it's very effective to force a public IP address\n  when one is known in advance for the media server. In doing so, KMS will not\n  need a STUN or TURN server, but remote peers will still be able to contact it.\n</p>\n<p>\n  You can try using this setting if KMS is deployed on a publicly accessible\n  server, without NAT, and with a static public IP address. But if it doesn't\n  work for you, just go back to configuring a STUN or TURN server for ICE.\n</p>\n<p>\n  Only set this parameter if you know what you're doing, and you understand 100%\n  WHY you need it. For the majority of cases, you should just prefer to\n  configure a STUN or TURN server.\n</p>\n<p><code>externalIPv6</code> is a single IPv6 address.</p>\n<p>Example:</p>\n<ul>\n  <li><code>externalIPv6=2001:0db8:85a3:0000:0000:8a2e:0370:7334</code></li>\n</ul>\n          ",
+          "type": "String"
+        },
+        {
           "name": "externalAddress",
-          "doc": "External IP address of the media server.\n<p>\n  This setting is normally NOT needed. Only use it if you know what you're\n  doing, and understand 100% WHY you want it. For the majority of cases, you\n  should prefer configuring STUN or TURN servers over using this setting.\n</p>\n<p>\n  This setting implements a hack that will mangle all local ICE candidates so\n  that their candidate address is replaced with the provided external address,\n  even for candidates of type 'host'. In doing so, this KMS will not need a\n  STUN or TURN server, but remote peers will still be able to contact it.\n</p>\n<p>\n  You can try using this setting if KMS is deployed on a publicly accessible\n  server, without NAT, and with a static public IP address. But if it doesn't\n  work for you, just go back to using the STUN or TURN settings above.\n</p>\n<p>\n  <code>externalAddress</code> is an IPv4 or IPv6 address.\n</p>\n<p>Examples:</p>\n<ul>\n  <li><code>externalAddress=10.70.35.2</code></li>\n  <li><code>externalAddress=2001:0db8:85a3:0000:0000:8a2e:0370:7334</code></li>\n</ul>\n          ",
+          "doc": "External IP address of the media server.\n<p>\n  Forces all local IPv4 and IPv6 ICE candidates to have the given address. This\n  is really nothing more than a hack, but it's very effective to force a public\n  IP address when one is known in advance for the media server. In doing so, KMS\n  will not need a STUN or TURN server, but remote peers will still be able to\n  contact it.\n</p>\n<p>\n  You can try using this setting if KMS is deployed on a publicly accessible\n  server, without NAT, and with a static public IP address. But if it doesn't\n  work for you, just go back to configuring a STUN or TURN server for ICE.\n</p>\n<p>\n  Only set this parameter if you know what you're doing, and you understand 100%\n  WHY you need it. For the majority of cases, you should just prefer to\n  configure a STUN or TURN server.\n</p>\n<p><code>externalAddress</code> is a single IPv4 or IPv6 address.</p>\n<p>Examples:</p>\n<ul>\n  <li><code>externalAddress=198.51.100.1</code></li>\n  <li><code>externalAddress=2001:0db8:85a3:0000:0000:8a2e:0370:7334</code></li>\n</ul>\n@deprecated Use <code>externalIPv4</code> and/or <code>externalIPv6</code> instead.\n          ",
           "type": "String"
         },
         {
