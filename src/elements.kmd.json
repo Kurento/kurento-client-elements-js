@@ -314,7 +314,7 @@
           },
           {
             "name": "useEncodedMedia",
-            "doc": "Feed the input media as-is to the Media Pipeline, instead of first decoding it.\n              <p>\n              When this property is not enabled, the input media gets always decoded into a raw format before being processed by the rest of the Media Pipeline; this is done to ensure that Kurento is able to keep track of lost keyframes among other quality-control measurements. Of course, having to decode the media has a cost in terms of CPU usage, but ensures that the output streaming will be robust and reliable.\n              </p>\n              <p>\n              When this property is enabled, the explained behavior gets disabled. Instead, The endpoint will provide any input media directly to the Media Pipeline, without prior decoding. Enabling this mode of operation could have a severe effect on stability, because lost video keyframes will not be regenerated; however, avoiding a full cycle of decoding and encoding can be very useful for certain applications, because it improves performance by greatly reducing the CPU processing load.\n              </p>\n              <p>\n              Keep in mind that if this property is enabled, the original source media MUST already have an encoding format which is compatible with the destination target. For example: given a pipeline which uses this endpoint to read a file and then streams it to a WebRTC browser such as Chrome, then the file must already be encoded with a VP8 or H.264 codec profile which Chrome is able to decode. Note that for this example, most browsers don't support ANY combination of H.264 encoding options; instead, they tend to support only a very specific subset of the codec features (also known as 'profiles').\n              </p>\n              <p>\n              We strongly recommend to avoid using this option, because correct behavior cannot be guaranteed.\n              </p>\n              ",
+            "doc": "Feed an encoded media as-is to the Media Pipeline, instead of first decoding it.\n              <p>\n                This property is disabled by default. The input media gets always decoded into\n                a raw format upon receiving it, before being processed by the rest of the\n                Media Pipeline. This is done to ensure that Kurento is able to keep track of\n                lost keyframes among other quality-control measurements. Of course, having to\n                decode the media has a cost in terms of CPU usage, but ensures that the output\n                streaming will be more robust and reliable.\n              </p>\n              <p>\n                When this property is enabled, Kurento simply passes the encoded media as-is\n                to the rest of the Media Pipeline, without decoding. Enabling this mode of\n                operation could have a severe effect on stability, because lost video\n                keyframes will not be regenerated; however, not having to encode the video\n                greatly reduces the CPU load.\n              </p>\n              <p>\n                Keep in mind that if this property is enabled, the original source media MUST\n                already be in a format that is compatible with the destination target. For\n                example: Given a Pipeline that reads a file and then streams it to a WebRTC\n                browser such as Chrome, the file must already be encoded with a VP8 or H.264\n                codec profile, which Chrome is able to decode.\n              </p>\n              <p>\n                Of special note is that you cannot feed any random combination of H.264\n                encoding options to a web browser; instead, they tend to support only a very\n                specific subset of the codec features (also known as 'profiles'). The most\n                compatible config for H.264 is\n                <strong>Constrained Baseline profile, level 3.1.</strong>\n              </p>\n              <p>Code examples:</p>\n              <pre><code>\n                # Java\n                PlayerEndpoint player = new PlayerEndpoint\n                  .Builder(pipeline, 'rtsp://localhost:5000/video')\n                  .useEncodedMedia()\n                  .build();\n              </code></pre>\n              <pre><code>\n                # JavaScript\n                let player = await pipeline.create('PlayerEndpoint', {\n                  uri: 'rtsp://localhost:5000/video',\n                  useEncodedMedia: true,\n                });\n              </code></pre>\n              ",
             "type": "boolean",
             "optional": true,
             "defaultValue": false
@@ -361,7 +361,7 @@
     },
     {
       "name": "RecorderEndpoint",
-      "doc": "Provides functionality to store media contents.\n<p>\n  RecorderEndpoint can store media into local files or send it to a remote\n  network storage. When another :rom:cls:`MediaElement` is connected to a\n  RecorderEndpoint, the media coming from the former will be encapsulated into\n  the selected recording format and stored in the designated location.\n</p>\n<p>\n  These parameters must be provided to create a RecorderEndpoint, and they\n  cannot be changed afterwards:\n</p>\n<ul>\n  <li>\n    <strong>Destination URI</strong>, where media will be stored. These formats\n    are supported:\n    <ul>\n      <li>\n        File: A file path that will be written into the local file system.\n        Example:\n        <ul>\n          <li><code>file:///path/to/file</code></li>\n        </ul>\n      </li>\n      <li>\n        HTTP: A POST request will be used against a remote server. The server\n        must support using the <i>chunked</i> encoding mode (HTTP header\n        <code>Transfer-Encoding: chunked</code>). Examples:\n        <ul>\n          <li><code>http(s)://{server-ip}/path/to/file</code></li>\n          <li>\n            <code>\n              http(s)://{username}:{password}@{server-ip}:{server-port}/path/to/file\n            </code>\n          </li>\n        </ul>\n      </li>\n      <li>\n        Relative URIs (with no schema) are supported. They are completed by\n        prepending a default URI defined by property <i>defaultPath</i>. This\n        property is defined in the configuration file\n        <i>/etc/kurento/modules/kurento/UriEndpoint.conf.ini</i>, and the\n        default value is <code>file:///var/lib/kurento/</code>\n      </li>\n      <li>\n        <strong>\n          NOTE (for current versions of Kurento 6.x): special characters are not\n          supported in <code>{username}</code> or <code>{password}</code>.\n        </strong>\n        This means that <code>{username}</code> cannot contain colons\n        (<code>:</code>), and <code>{password}</code> cannot contain 'at' signs\n        (<code>@</code>). This is a limitation of GStreamer 1.8 (the underlying\n        media framework behind Kurento), and is already fixed in newer versions\n        (which the upcoming Kurento 7.x will use).\n      </li>\n      <li>\n        <strong>\n          NOTE (for upcoming Kurento 7.x): special characters in\n          <code>{username}</code> or <code>{password}</code> must be\n          url-encoded.\n        </strong>\n        This means that colons (<code>:</code>) should be replaced with\n        <code>%3A</code>, and 'at' signs (<code>@</code>) should be replaced\n        with <code>%40</code>.\n      </li>\n    </ul>\n  </li>\n  <li>\n    <strong>Media Profile</strong> (:rom:attr:`MediaProfileSpecType`), used for\n    storage. This will determine the video and audio encoding. See below for\n    more details about Media Profile.\n  </li>\n  <li>\n    <strong>EndOfStream</strong> (optional), a parameter that dictates if the\n    recording should be automatically stopped once the EOS event is detected.\n  </li>\n</ul>\n<p>\n  Note that\n  <strong>\n    RecorderEndpoint requires write permissions to the destination\n  </strong>\n  ; otherwise, the media server won't be able to store any information, and an\n  :rom:evt:`Error` will be fired. Make sure your application subscribes to this\n  event, otherwise troubleshooting issues will be difficult.\n</p>\n<ul>\n  <li>\n    To write local files (if you use <code>file://</code>), the system user that\n    is owner of the media server process needs to have write permissions for the\n    requested path. By default, this user is named '<code>kurento</code>'.\n  </li>\n  <li>\n    To record through HTTP, the remote server must be accessible through the\n    network, and also have the correct write permissions for the destination\n    path.\n  </li>\n</ul>\n<p>\n  The <strong>Media Profile</strong> is quite an important parameter, as it will\n  determine whether the server needs to perform on-the-fly transcoding of the\n  media. If the input stream codec if not compatible with the selected media\n  profile, the media will be transcoded into a suitable format. This will result\n  in a higher CPU load and will impact overall performance of the media server.\n</p>\n<p>\n  For example: If your pipeline receives <b>VP8</b>-encoded video from WebRTC,\n  and sends it to a RecorderEndpoint; depending on the format selected...\n</p>\n<ul>\n  <li>\n    WEBM: The input codec is the same as the recording format, so no transcoding\n    will take place.\n  </li>\n  <li>\n    MP4: The media server will have to transcode from <b>VP8</b> to <b>H264</b>.\n    This will raise the CPU load in the system.\n  </li>\n  <li>\n    MKV: Again, video must be transcoded from <b>VP8</b> to <b>H264</b>, which\n    means more CPU load.\n  </li>\n</ul>\n<p>\n  From this you can see how selecting the correct format for your application is\n  a very important decision.\n</p>\n<p>\n  Recording will start as soon as the user invokes the\n  <code>record</code> method. The recorder will then store, in the location\n  indicated, the media that the source is sending to the endpoint. If no media\n  is being received, or no endpoint has been connected, then the destination\n  will be empty. The recorder starts storing information into the file as soon\n  as it gets it.\n</p>\n<p>\n  <strong>Recording must be stopped</strong> when no more data should be stored.\n  This can be with the <code>stopAndWait</code> method, which blocks and returns\n  only after all the information was stored correctly.\n</p>\n<p>\n  <strong>\n    If your output file is empty, this means that the recorder is waiting for\n    input media.\n  </strong>\n  When another endpoint is connected to the recorder, by default both AUDIO and\n  VIDEO media types are expected, unless specified otherwise when invoking the\n  <code>connect</code> method. Failing to provide both types, will result in the\n  RecorderEndpoint buffering the received media: it won't be written to the file\n  until the recording is stopped. The recorder waits until all types of media\n  start arriving, in order to synchronize them appropriately.\n</p>\n<p>\n  The source endpoint can be hot-swapped while the recording is taking place.\n  The recorded file will then contain different feeds. When switching video\n  sources, if the new video has different size, the recorder will retain the\n  size of the previous source. If the source is disconnected, the last frame\n  recorded will be shown for the duration of the disconnection, or until the\n  recording is stopped.\n</p>\n<p>\n  <strong>\n    It is recommended to start recording only after media arrives.\n  </strong>\n  For this, you may use the <code>MediaFlowInStateChange</code> and\n  <code>MediaFlowOutStateChange</code>\n  events of your endpoints, and synchronize the recording with the moment media\n  comes into the Recorder. For example:\n</p>\n<ol>\n  <li>\n    When the remote video arrives to KMS, your WebRtcEndpoint will start\n    generating packets into the Kurento Pipeline, and it will trigger a\n    <code>MediaFlowOutStateChange</code> event.\n  </li>\n  <li>\n    When video packets arrive from the WebRtcEndpoint to the RecorderEndpoint,\n    the RecorderEndpoint will raise a <code>MediaFlowInStateChange</code> event.\n  </li>\n  <li>\n    You should only start recording when RecorderEndpoint has notified a\n    <code>MediaFlowInStateChange</code> for ALL streams (so, if you record\n    AUDIO+VIDEO, your application must receive a\n    <code>MediaFlowInStateChange</code> event for audio, and another\n    <code>MediaFlowInStateChange</code> event for video).\n  </li>\n</ol>\n      ",
+      "doc": "Provides functionality to store media contents.\n<p>\n  RecorderEndpoint can store media into local files or send it to a remote\n  network storage. When another :rom:cls:`MediaElement` is connected to a\n  RecorderEndpoint, the media coming from the former will be encapsulated into\n  the selected recording format and stored in the designated location.\n</p>\n<p>\n  These parameters must be provided to create a RecorderEndpoint, and they\n  cannot be changed afterwards:\n</p>\n<ul>\n  <li>\n    <strong>Destination URI</strong>, where media will be stored. These formats\n    are supported:\n    <ul>\n      <li>\n        File: A file path that will be written into the local file system.\n        Example:\n        <ul>\n          <li><code>file:///path/to/file</code></li>\n        </ul>\n      </li>\n      <li>\n        HTTP: A POST request will be used against a remote server. The server\n        must support using the <i>chunked</i> encoding mode (HTTP header\n        <code>Transfer-Encoding: chunked</code>). Examples:\n        <ul>\n          <li><code>http(s)://{server-ip}/path/to/file</code></li>\n          <li>\n            <code>\n              http(s)://{username}:{password}@{server-ip}:{server-port}/path/to/file\n            </code>\n          </li>\n        </ul>\n      </li>\n      <li>\n        Relative URIs (with no schema) are supported. They are completed by\n        prepending a default URI defined by property <i>defaultPath</i>. This\n        property is defined in the configuration file\n        <i>/etc/kurento/modules/kurento/UriEndpoint.conf.ini</i>, and the\n        default value is <code>file:///var/lib/kurento/</code>\n      </li>\n      <li>\n        <strong>\n          NOTE (for current versions of Kurento 6.x): special characters are not\n          supported in <code>{username}</code> or <code>{password}</code>.\n        </strong>\n        This means that <code>{username}</code> cannot contain colons\n        (<code>:</code>), and <code>{password}</code> cannot contain 'at' signs\n        (<code>@</code>). This is a limitation of GStreamer 1.8 (the underlying\n        media framework behind Kurento), and is already fixed in newer versions\n        (which the upcoming Kurento 7.x will use).\n      </li>\n      <li>\n        <strong>\n          NOTE (for upcoming Kurento 7.x): special characters in\n          <code>{username}</code> or <code>{password}</code> must be\n          url-encoded.\n        </strong>\n        This means that colons (<code>:</code>) should be replaced with\n        '<code>%3A</code>', and 'at' signs (<code>@</code>) should be replaced\n        with '<code>%40</code>'.\n      </li>\n    </ul>\n  </li>\n  <li>\n    <strong>Media Profile</strong> (:rom:attr:`MediaProfileSpecType`), used for\n    storage. This will determine the video and audio encoding. See below for\n    more details about Media Profile.\n  </li>\n  <li>\n    <strong>EndOfStream</strong> (optional), a parameter that dictates if the\n    recording should be automatically stopped once the EOS event is detected.\n  </li>\n</ul>\n<p>\n  Note that\n  <strong>\n    RecorderEndpoint requires write permissions to the destination\n  </strong>\n  ; otherwise, the media server won't be able to store any information, and an\n  :rom:evt:`Error` will be fired. Make sure your application subscribes to this\n  event, otherwise troubleshooting issues will be difficult.\n</p>\n<ul>\n  <li>\n    To write local files (if you use <code>file://</code>), the system user that\n    is owner of the media server process needs to have write permissions for the\n    requested path. By default, this user is named '<code>kurento</code>'.\n  </li>\n  <li>\n    To record through HTTP, the remote server must be accessible through the\n    network, and also have the correct write permissions for the destination\n    path.\n  </li>\n</ul>\n<p>\n  The <strong>Media Profile</strong> is quite an important parameter, as it will\n  determine whether the server needs to perform on-the-fly transcoding of the\n  media. If the input stream codec if not compatible with the selected media\n  profile, the media will be transcoded into a suitable format. This will result\n  in a higher CPU load and will impact overall performance of the media server.\n</p>\n<p>\n  For example: If your pipeline receives <b>VP8</b>-encoded video from WebRTC,\n  and sends it to a RecorderEndpoint; depending on the format selected...\n</p>\n<ul>\n  <li>\n    WEBM: The input codec is the same as the recording format, so no transcoding\n    will take place.\n  </li>\n  <li>\n    MP4: The media server will have to transcode from <b>VP8</b> to <b>H264</b>.\n    This will raise the CPU load in the system.\n  </li>\n  <li>\n    MKV: Again, video must be transcoded from <b>VP8</b> to <b>H264</b>, which\n    means more CPU load.\n  </li>\n</ul>\n<p>\n  From this you can see how selecting the correct format for your application is\n  a very important decision.\n</p>\n<p>\n  Recording will start as soon as the user invokes the\n  <code>record</code> method. The recorder will then store, in the location\n  indicated, the media that the source is sending to the endpoint. If no media\n  is being received, or no endpoint has been connected, then the destination\n  will be empty. The recorder starts storing information into the file as soon\n  as it gets it.\n</p>\n<p>\n  <strong>Recording must be stopped</strong> when no more data should be stored.\n  This can be with the <code>stopAndWait</code> method, which blocks and returns\n  only after all the information was stored correctly.\n</p>\n<p>\n  <strong>\n    If your output file is empty, this means that the recorder is waiting for\n    input media.\n  </strong>\n  When another endpoint is connected to the recorder, by default both AUDIO and\n  VIDEO media types are expected, unless specified otherwise when invoking the\n  <code>connect</code> method. Failing to provide both types, will result in the\n  RecorderEndpoint buffering the received media: it won't be written to the file\n  until the recording is stopped. The recorder waits until all types of media\n  start arriving, in order to synchronize them appropriately.\n</p>\n<p>\n  The source endpoint can be hot-swapped while the recording is taking place.\n  The recorded file will then contain different feeds. When switching video\n  sources, if the new video has different size, the recorder will retain the\n  size of the previous source. If the source is disconnected, the last frame\n  recorded will be shown for the duration of the disconnection, or until the\n  recording is stopped.\n</p>\n<p>\n  <strong>\n    It is recommended to start recording only after media arrives.\n  </strong>\n  For this, you may use the <code>MediaFlowInStateChange</code> and\n  <code>MediaFlowOutStateChange</code>\n  events of your endpoints, and synchronize the recording with the moment media\n  comes into the Recorder. For example:\n</p>\n<ol>\n  <li>\n    When the remote video arrives to KMS, your WebRtcEndpoint will start\n    generating packets into the Kurento Pipeline, and it will trigger a\n    <code>MediaFlowOutStateChange</code> event.\n  </li>\n  <li>\n    When video packets arrive from the WebRtcEndpoint to the RecorderEndpoint,\n    the RecorderEndpoint will raise a <code>MediaFlowInStateChange</code> event.\n  </li>\n  <li>\n    You should only start recording when RecorderEndpoint has notified a\n    <code>MediaFlowInStateChange</code> for ALL streams (so, if you record\n    AUDIO+VIDEO, your application must receive a\n    <code>MediaFlowInStateChange</code> event for audio, and another\n    <code>MediaFlowInStateChange</code> event for video).\n  </li>\n</ol>\n      ",
       "extends": "UriEndpoint",
       "constructor": {
         "params": [
@@ -627,12 +627,48 @@
     {
       "typeFormat": "ENUM",
       "values": [
+        "AES_128_CM_HMAC_SHA1_32",
+        "AES_128_CM_HMAC_SHA1_80",
+        "AES_256_CM_HMAC_SHA1_32",
+        "AES_256_CM_HMAC_SHA1_80"
+      ],
+      "name": "CryptoSuite",
+      "doc": "Describes the encryption and authentication algorithms"
+    },
+    {
+      "typeFormat": "REGISTER",
+      "properties": [
+        {
+          "name": "key",
+          "doc": "<p>Master key and salt (plain text)</p>\n          <p>\n          This field provides the the cryptographic master key appended with the master salt, in plain text format. This allows to provide a key that is composed of readable ASCII characters.\n          </p>\n          <p>\n          The expected length of the key (as provided to this parameter) is determined by the crypto-suite for which the key applies (30 characters for AES_CM_128, 46 characters for AES_CM_256). If the length does not match the expected value, the key will be considered invalid.\n          </p>\n          <p>\n          If no key is provided, a random one will be generated using the `getrandom` system call.\n          </p>",
+          "type": "String",
+          "optional": true
+        },
+        {
+          "name": "keyBase64",
+          "doc": "<p>Master key and salt (base64 encoded)</p>\n          <p>\n          This field provides the cryptographic master key appended with the master salt, encoded in base64. This allows to provide a binary key that is not limited to the ASCII character set.\n          </p>\n          <p>\n          The expected length of the key (after being decoded from base64) is determined by the crypto-suite for which the key applies (30 bytes for AES_CM_128, 46 bytes for AES_CM_256). If the length does not match the expected value, the key will be considered invalid.\n          </p>\n          <p>\n          If no key is provided, a random one will be generated using the `getrandom` system call.\n          </p>",
+          "type": "String",
+          "optional": true
+        },
+        {
+          "name": "crypto",
+          "doc": "Selects the cryptographic suite to be used. For available values, please see the CryptoSuite enum.",
+          "type": "CryptoSuite",
+          "optional": true
+        }
+      ],
+      "name": "SDES",
+      "doc": "Security Descriptions for Media Streams"
+    },
+    {
+      "typeFormat": "ENUM",
+      "values": [
         "NONE",
         "GENPTS",
         "FILL_IF_TRANSCODING"
       ],
       "name": "GapsFixMethod",
-      "doc": "How to fix gaps when they are found in the recorded stream.\n<p>\n  Gaps are typically caused by packet loss in the input streams, such as when an\n  RTP or WebRTC media flow suffers from network congestion and some packets\n  don't arrive at the media server.\n</p>\n<p>Different ways of handling gaps have different tradeoffs:</p>\n<ul>\n  <li>\n    <strong>NONE</strong>: Do not fix gaps. This means that the\n    resulting files will contain gaps in the timestamps. Some players are clever\n    enough to adapt to this during playback, so that the gaps are reduced to a\n    minimum and no problems are perceived by the user; other players are not so\n    sophisticated, and will struggle trying to decode a file that contains gaps.\n    For example, trying to play such a file directly with Chrome will cause\n    lipsync issues (audio and video out of sync).\n    <p>\n      For example, assume a session length of 15 seconds: packets arrive\n      correctly during the first 5 seconds, then there is a gap, then data\n      arrives again for the last 5 seconds. Also, for simplicity, assume 1 frame\n      per second. With no fix for gaps, the RecorderEndpoint will store each\n      frame as-is, with these timestamps:\n    </p>\n    <pre>\n      frame 1  - 00:01\n      frame 2  - 00:02\n      frame 3  - 00:03\n      frame 4  - 00:04\n      frame 5  - 00:05\n      frame 11 - 00:11\n      frame 12 - 00:12\n      frame 13 - 00:13\n      frame 14 - 00:14\n      frame 15 - 00:15\n    </pre>\n    <p>\n      Notice how the frames between 6 to 10 are missing, but the last 5 frames\n      still conserve their original timestamp. The total length of the file is\n      detected as 15 seconds by most players, although playback could stutter or\n      hang during the missing section.\n    </p>\n  </li>\n  <li>\n    <strong>GENPTS</strong>: Replace timestamps of all frames arriving\n    after a gap. With this method, the length of each gap will be taken into\n    account, to be subtracted from the timestamp of all following frames. This\n    provides for a continuous, gap-less recording, at the expense of reducing\n    the total apparent length of each file.\n    <p>\n      In our example, the RecorderEndpoint will change all timestamps that\n      follow a gap in the stream, and store each frame as follows:\n    </p>\n    <pre>\n      frame 1  - 00:01\n      frame 2  - 00:02\n      frame 3  - 00:03\n      frame 4  - 00:04\n      frame 5  - 00:05\n      frame 11 - 00:06\n      frame 12 - 00:07\n      frame 13 - 00:08\n      frame 14 - 00:09\n      frame 15 - 00:10\n    </pre>\n    <p>\n      Notice how the frames between 6 to 10 are missing, and the last 5 frames\n      have their timestamps corrected to provide a smooth increment over the\n      previous ones. The total length of the file is detected as 10 seconds, and\n      playback should be correct throughout the whole file.\n    </p>\n  </li>\n  <li>\n    <strong>FILL_IF_TRANSCODING</strong>: NOT IMPLEMENTED.\n    <p>This is a proposal for future improvement of the RecorderEndpoint.</p>\n    <p>\n      It is possible to perform a dynamic adaptation of audio rate and add frame\n      duplication to the video, such that the missing parts are filled with\n      artificial data. This has the advantage of providing a smooth playback\n      result, and at the same time conserving all original timestamps.\n    </p>\n    <p>\n      However, the main issue with this method is that it requires accessing the\n      decoded media; i.e., transcoding must be active. For this reason, the\n      proposal is to offer this option to be enabled only when transcoding would\n      still happen anyways.\n    </p>\n    <p>\n      In our example, the RecorderEndpoint would change all missing frames like\n      this:\n    </p>\n    <pre>\n      frame 1  - 00:01\n      frame 2  - 00:02\n      frame 3  - 00:03\n      frame 4  - 00:04\n      frame 5  - 00:05\n      fake frame - 00:06\n      fake frame - 00:07\n      fake frame - 00:08\n      fake frame - 00:09\n      fake frame - 00:10\n      frame 11 - 00:11\n      frame 12 - 00:12\n      frame 13 - 00:13\n      frame 14 - 00:14\n      frame 15 - 00:15\n    </pre>\n    <p>\n      This joins the best of both worlds: on one hand, the playback should be\n      smooth and even the most basic players should be able to handle the\n      recording files without issue. On the other, the total length of the file\n      is left unmodified, so it matches with the expected duration of the\n      sessions that are being recorded.\n    </p>\n  </li>\n</ul>\n      "
+      "doc": "How to fix gaps when they are found in the recorded stream.\n<p>\nGaps are typically caused by packet loss in the input streams, such as when an\nRTP or WebRTC media flow suffers from network congestion and some packets don't\narrive at the media server.\n</p>\n<p>Different ways of handling gaps have different tradeoffs:</p>\n<ul>\n  <li>\n    <strong>NONE</strong>: Do not fix gaps.\n    <p>\n      Leave the stream as-is, and store it with any gaps that the stream might\n      have. Some players are clever enough to adapt to this during playback, so\n      that the gaps are reduced to a minimum and no problems are perceived by\n      the user; other players are not so sophisticated, and will struggle trying\n      to decode a file that contains gaps. For example, trying to play such a\n      file directly with Chrome will cause lipsync issues (audio and video will\n      fall out of sync).\n    </p>\n    <p>\n      This is the best choice if you need consistent durations across multiple\n      simultaneous recordings, or if you are anyway going to post-process the\n      recordings (e.g. with an extra FFmpeg step).\n    </p>\n    <p>\n      For example, assume a session length of 15 seconds: packets arrive\n      correctly during the first 5 seconds, then there is a gap, then data\n      arrives again for the last 5 seconds. Also, for simplicity, assume 1 frame\n      per second. With no fix for gaps, the RecorderEndpoint will store each\n      frame as-is, with these timestamps:\n    </p>\n    <pre>\n      frame 1  - 00:01\n      frame 2  - 00:02\n      frame 3  - 00:03\n      frame 4  - 00:04\n      frame 5  - 00:05\n      frame 11 - 00:11\n      frame 12 - 00:12\n      frame 13 - 00:13\n      frame 14 - 00:14\n      frame 15 - 00:15\n    </pre>\n    <p>\n      Notice how the frames between 6 to 10 are missing, but the last 5 frames\n      still conserve their original timestamp. The total length of the file is\n      detected as 15 seconds by most players, although playback could stutter or\n      hang during the missing section.\n    </p>\n  </li>\n  <li>\n    <strong>GENPTS</strong>: Adjust timestamps to generate a smooth progression\n    over all frames.\n    <p>\n      This technique rewrites the timestamp of all frames, so that gaps are\n      suppressed. It provides the best playback experience for recordings that\n      need to be played as-is (i.e. they won't be post-processed). However,\n      fixing timestamps might cause a change in the total duration of a file. So\n      different recordings from the same session might end up with slightly\n      different durations.\n    </p>\n    <p>\n      In our example, the RecorderEndpoint will change all timestamps that\n      follow a gap in the stream, and store each frame as follows:\n    </p>\n    <pre>\n      frame 1  - 00:01\n      frame 2  - 00:02\n      frame 3  - 00:03\n      frame 4  - 00:04\n      frame 5  - 00:05\n      frame 11 - 00:06\n      frame 12 - 00:07\n      frame 13 - 00:08\n      frame 14 - 00:09\n      frame 15 - 00:10\n    </pre>\n    <p>\n      Notice how the frames between 6 to 10 are missing, and the last 5 frames\n      have their timestamps corrected to provide a smooth increment over the\n      previous ones. The total length of the file is detected as 10 seconds, and\n      playback should be correct throughout the whole file.\n    </p>\n  </li>\n  <li>\n    <strong>FILL_IF_TRANSCODING</strong>: (NOT IMPLEMENTED YET).\n    <p>This is a proposal for future improvement of the RecorderEndpoint.</p>\n    <p>\n      It is possible to perform a dynamic adaptation of audio rate and add frame\n      duplication to the video, such that the missing parts are filled with\n      artificial data. This has the advantage of providing a smooth playback\n      result, and at the same time conserving all original timestamps.\n    </p>\n    <p>\n      However, the main issue with this method is that it requires accessing the\n      decoded media; i.e., transcoding must be active. For this reason, the\n      proposal is to offer this option to be enabled only when transcoding would\n      still happen anyways.\n    </p>\n    <p>\n      In our example, the RecorderEndpoint would change all missing frames like\n      this:\n    </p>\n    <pre>\n      frame 1  - 00:01\n      frame 2  - 00:02\n      frame 3  - 00:03\n      frame 4  - 00:04\n      frame 5  - 00:05\n      fake frame - 00:06\n      fake frame - 00:07\n      fake frame - 00:08\n      fake frame - 00:09\n      fake frame - 00:10\n      frame 11 - 00:11\n      frame 12 - 00:12\n      frame 13 - 00:13\n      frame 14 - 00:14\n      frame 15 - 00:15\n    </pre>\n    <p>\n      This joins the best of both worlds: on one hand, the playback should be\n      smooth and even the most basic players should be able to handle the\n      recording files without issue. On the other, the total length of the file\n      is left unmodified, so it matches with the expected duration of the\n      sessions that are being recorded.\n    </p>\n  </li>\n</ul>\n      "
     },
     {
       "typeFormat": "ENUM",
@@ -651,33 +687,6 @@
       ],
       "name": "MediaProfileSpecType",
       "doc": "Media Profile.\n\nCurrently WEBM, MKV, MP4 and JPEG are supported."
-    },
-    {
-      "typeFormat": "REGISTER",
-      "properties": [
-        {
-          "name": "isSeekable",
-          "doc": "Seek is possible in video source",
-          "type": "boolean"
-        },
-        {
-          "name": "seekableInit",
-          "doc": "First video position to do seek in ms",
-          "type": "int64"
-        },
-        {
-          "name": "seekableEnd",
-          "doc": "Last video position to do seek in ms",
-          "type": "int64"
-        },
-        {
-          "name": "duration",
-          "doc": "Video duration in ms",
-          "type": "int64"
-        }
-      ],
-      "name": "VideoInfo",
-      "doc": ""
     },
     {
       "typeFormat": "REGISTER",
@@ -773,43 +782,52 @@
       "doc": "."
     },
     {
-      "typeFormat": "ENUM",
-      "values": [
-        "AES_128_CM_HMAC_SHA1_32",
-        "AES_128_CM_HMAC_SHA1_80",
-        "AES_256_CM_HMAC_SHA1_32",
-        "AES_256_CM_HMAC_SHA1_80"
-      ],
-      "name": "CryptoSuite",
-      "doc": "Describes the encryption and authentication algorithms"
-    },
-    {
       "typeFormat": "REGISTER",
       "properties": [
         {
-          "name": "key",
-          "doc": "<p>Master key and salt (plain text)</p>\n          <p>\n          This field provides the the cryptographic master key appended with the master salt, in plain text format. This allows to provide a key that is composed of readable ASCII characters.\n          </p>\n          <p>\n          The expected length of the key (as provided to this parameter) is determined by the crypto-suite for which the key applies (30 characters for AES_CM_128, 46 characters for AES_CM_256). If the length does not match the expected value, the key will be considered invalid.\n          </p>\n          <p>\n          If no key is provided, a random one will be generated using the `getrandom` system call.\n          </p>",
-          "type": "String",
-          "optional": true
+          "name": "isSeekable",
+          "doc": "Seek is possible in video source",
+          "type": "boolean"
         },
         {
-          "name": "keyBase64",
-          "doc": "<p>Master key and salt (base64 encoded)</p>\n          <p>\n          This field provides the cryptographic master key appended with the master salt, encoded in base64. This allows to provide a binary key that is not limited to the ASCII character set.\n          </p>\n          <p>\n          The expected length of the key (after being decoded from base64) is determined by the crypto-suite for which the key applies (30 bytes for AES_CM_128, 46 bytes for AES_CM_256). If the length does not match the expected value, the key will be considered invalid.\n          </p>\n          <p>\n          If no key is provided, a random one will be generated using the `getrandom` system call.\n          </p>",
-          "type": "String",
-          "optional": true
+          "name": "seekableInit",
+          "doc": "First video position to do seek in ms",
+          "type": "int64"
         },
         {
-          "name": "crypto",
-          "doc": "Selects the cryptographic suite to be used. For available values, please see the CryptoSuite enum.",
-          "type": "CryptoSuite",
-          "optional": true
+          "name": "seekableEnd",
+          "doc": "Last video position to do seek in ms",
+          "type": "int64"
+        },
+        {
+          "name": "duration",
+          "doc": "Video duration in ms",
+          "type": "int64"
         }
       ],
-      "name": "SDES",
-      "doc": "Security Descriptions for Media Streams"
+      "name": "VideoInfo",
+      "doc": ""
     }
   ],
   "events": [
+    {
+      "properties": [],
+      "extends": "Media",
+      "name": "EndOfStream",
+      "doc": "Event raised when the stream that the element sends out is finished."
+    },
+    {
+      "properties": [
+        {
+          "name": "mediaType",
+          "doc": "The media stream",
+          "type": "MediaType"
+        }
+      ],
+      "extends": "Media",
+      "name": "OnKeySoftLimit",
+      "doc": "Fired when encryption is used and any stream reached the soft key usage limit, which means it will expire soon."
+    },
     {
       "properties": [],
       "extends": "Media",
@@ -967,24 +985,6 @@
       "extends": "Media",
       "name": "NewCandidatePairSelected",
       "doc": "Event fired when a new pair of ICE candidates is used by the ICE library.\nThis could also happen in the middle of a session, though not likely.\n      "
-    },
-    {
-      "properties": [
-        {
-          "name": "mediaType",
-          "doc": "The media stream",
-          "type": "MediaType"
-        }
-      ],
-      "extends": "Media",
-      "name": "OnKeySoftLimit",
-      "doc": "Fired when encryption is used and any stream reached the soft key usage limit, which means it will expire soon."
-    },
-    {
-      "properties": [],
-      "extends": "Media",
-      "name": "EndOfStream",
-      "doc": "Event raised when the stream that the element sends out is finished."
     }
   ]
 }
