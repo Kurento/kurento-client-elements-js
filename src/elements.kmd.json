@@ -1,13 +1,13 @@
 {
   "name": "elements",
-  "version": "6.17.0",
-  "kurentoVersion": "^6.17.0",
+  "version": "6.18.0-dev",
+  "kurentoVersion": "^6.18.0-dev",
   "imports": [
     {
       "name": "core",
-      "version": "^6.17.0",
-      "mavenVersion": "[6.17.0,7.0.0-SNAPSHOT)",
-      "npmVersion": ">=6.17.0 <7.0.0"
+      "version": "^6.18.0-dev",
+      "mavenVersion": "[6.18.0-SNAPSHOT,7.0.0-SNAPSHOT)",
+      "npmVersion": "Kurento/kurento-client-core-js"
     }
   ],
   "code": {
@@ -15,7 +15,7 @@
       "java": {
         "mavenGroupId": "org.kurento",
         "mavenArtifactId": "kms-api-elements",
-        "mavenVersion": "6.17.0"
+        "mavenVersion": "6.18.0-SNAPSHOT"
       }
     },
     "api": {
@@ -23,13 +23,13 @@
         "packageName": "org.kurento.client",
         "mavenGroupId": "org.kurento",
         "mavenArtifactId": "kurento-client",
-        "mavenVersion": "6.17.0"
+        "mavenVersion": "6.18.0-SNAPSHOT"
       },
       "js": {
         "nodeName": "kurento-client-elements",
         "npmDescription": "JavaScript Client API for Kurento Media Server",
         "npmGit": "Kurento/kurento-client-elements-js",
-        "npmVersion": "6.17.0"
+        "npmVersion": "Kurento/kurento-client-elements-js"
       }
     },
     "implementation": {
@@ -615,10 +615,13 @@
         "IceGatheringDone",
         "OnIceComponentStateChanged",
         "IceComponentStateChange",
+        "IceComponentStateChanged",
         "OnDataChannelOpened",
         "DataChannelOpen",
+        "DataChannelOpened",
         "OnDataChannelClosed",
         "DataChannelClose",
+        "DataChannelClosed",
         "NewCandidatePairSelected"
       ]
     }
@@ -647,10 +650,38 @@
         "MP4_VIDEO_ONLY",
         "MP4_AUDIO_ONLY",
         "JPEG_VIDEO_ONLY",
-        "KURENTO_SPLIT_RECORDER"
+        "KURENTO_SPLIT_RECORDER",
+        "FLV"
       ],
       "name": "MediaProfileSpecType",
-      "doc": "Media Profile.\n\nCurrently WEBM, MKV, MP4 and JPEG are supported."
+      "doc": "Media Profile.\n\nCurrently WEBM, MKV, MP4, FLV and JPEG are supported."
+    },
+    {
+      "typeFormat": "REGISTER",
+      "properties": [
+        {
+          "name": "isSeekable",
+          "doc": "Seek is possible in video source",
+          "type": "boolean"
+        },
+        {
+          "name": "seekableInit",
+          "doc": "First video position to do seek in ms",
+          "type": "int64"
+        },
+        {
+          "name": "seekableEnd",
+          "doc": "Last video position to do seek in ms",
+          "type": "int64"
+        },
+        {
+          "name": "duration",
+          "doc": "Video duration in ms",
+          "type": "int64"
+        }
+      ],
+      "name": "VideoInfo",
+      "doc": ""
     },
     {
       "typeFormat": "REGISTER",
@@ -756,33 +787,6 @@
       "doc": "."
     },
     {
-      "typeFormat": "REGISTER",
-      "properties": [
-        {
-          "name": "isSeekable",
-          "doc": "Seek is possible in video source",
-          "type": "boolean"
-        },
-        {
-          "name": "seekableInit",
-          "doc": "First video position to do seek in ms",
-          "type": "int64"
-        },
-        {
-          "name": "seekableEnd",
-          "doc": "Last video position to do seek in ms",
-          "type": "int64"
-        },
-        {
-          "name": "duration",
-          "doc": "Video duration in ms",
-          "type": "int64"
-        }
-      ],
-      "name": "VideoInfo",
-      "doc": ""
-    },
-    {
       "typeFormat": "ENUM",
       "values": [
         "AES_128_CM_HMAC_SHA1_32",
@@ -820,12 +824,6 @@
     }
   ],
   "events": [
-    {
-      "properties": [],
-      "extends": "Media",
-      "name": "EndOfStream",
-      "doc": "Event raised when the stream that the element sends out is finished."
-    },
     {
       "properties": [],
       "extends": "Media",
@@ -900,7 +898,7 @@
       ],
       "extends": "Media",
       "name": "OnIceComponentStateChanged",
-      "doc": "Event fired when and ICE component state changes.\nSee :rom:cls:`IceComponentState` for a list of possible states.\n@deprecated Use <code>IceComponentStateChange</code> instead.\n      "
+      "doc": "Event fired when and ICE component state changes.\nSee :rom:cls:`IceComponentState` for a list of possible states.\n@deprecated Use <code>IceComponentStateChanged</code> instead.\n      "
     },
     {
       "properties": [
@@ -922,6 +920,28 @@
       ],
       "extends": "Media",
       "name": "IceComponentStateChange",
+      "doc": "Event fired when and ICE component state changes.\nSee :rom:cls:`IceComponentState` for a list of possible states.\n@deprecated Use <code>IceComponentStateChanged</code> instead.\n      "
+    },
+    {
+      "properties": [
+        {
+          "name": "streamId",
+          "doc": "The ID of the stream",
+          "type": "int"
+        },
+        {
+          "name": "componentId",
+          "doc": "The ID of the component",
+          "type": "int"
+        },
+        {
+          "name": "state",
+          "doc": "The state of the component",
+          "type": "IceComponentState"
+        }
+      ],
+      "extends": "Media",
+      "name": "IceComponentStateChanged",
       "doc": "Event fired when and ICE component state changes.\nSee :rom:cls:`IceComponentState` for a list of possible states.\n      "
     },
     {
@@ -934,7 +954,7 @@
       ],
       "extends": "Media",
       "name": "OnDataChannelOpened",
-      "doc": "Event fired when a new data channel is created.\n@deprecated Use <code>DataChannelOpen</code> instead.\n      "
+      "doc": "Event fired when a new data channel is created.\n@deprecated Use <code>DataChannelOpened</code> instead.\n      "
     },
     {
       "properties": [
@@ -946,6 +966,18 @@
       ],
       "extends": "Media",
       "name": "DataChannelOpen",
+      "doc": "Event fired when a new data channel is created.\n@deprecated Use <code>DataChannelOpened</code> instead.\n      "
+    },
+    {
+      "properties": [
+        {
+          "name": "channelId",
+          "doc": "The channel identifier",
+          "type": "int"
+        }
+      ],
+      "extends": "Media",
+      "name": "DataChannelOpened",
       "doc": "Event fired when a new data channel is created."
     },
     {
@@ -958,7 +990,7 @@
       ],
       "extends": "Media",
       "name": "OnDataChannelClosed",
-      "doc": "Event fired when a data channel is closed.\n@deprecated Use <code>DataChannelClose</code> instead.\n      "
+      "doc": "Event fired when a data channel is closed.\n@deprecated Use <code>DataChannelClosed</code> instead.\n      "
     },
     {
       "properties": [
@@ -970,6 +1002,18 @@
       ],
       "extends": "Media",
       "name": "DataChannelClose",
+      "doc": "Event fired when a data channel is closed.\n@deprecated Use <code>DataChannelClosed</code> instead.\n      "
+    },
+    {
+      "properties": [
+        {
+          "name": "channelId",
+          "doc": "The channel identifier",
+          "type": "int"
+        }
+      ],
+      "extends": "Media",
+      "name": "DataChannelClosed",
       "doc": "Event fired when a data channel is closed."
     },
     {
@@ -995,6 +1039,12 @@
       "extends": "Media",
       "name": "OnKeySoftLimit",
       "doc": "Fired when encryption is used and any stream reached the soft key usage limit, which means it will expire soon."
+    },
+    {
+      "properties": [],
+      "extends": "Media",
+      "name": "EndOfStream",
+      "doc": "Event raised when the stream that the element sends out is finished."
     }
   ]
 }
