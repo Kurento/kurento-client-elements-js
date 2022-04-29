@@ -660,6 +660,33 @@
       "typeFormat": "REGISTER",
       "properties": [
         {
+          "name": "isSeekable",
+          "doc": "Seek is possible in video source",
+          "type": "boolean"
+        },
+        {
+          "name": "seekableInit",
+          "doc": "First video position to do seek in ms",
+          "type": "int64"
+        },
+        {
+          "name": "seekableEnd",
+          "doc": "Last video position to do seek in ms",
+          "type": "int64"
+        },
+        {
+          "name": "duration",
+          "doc": "Video duration in ms",
+          "type": "int64"
+        }
+      ],
+      "name": "VideoInfo",
+      "doc": ""
+    },
+    {
+      "typeFormat": "REGISTER",
+      "properties": [
+        {
           "name": "candidate",
           "doc": "The candidate-attribute as defined in section 15.1 of ICE (rfc5245).",
           "type": "String"
@@ -760,33 +787,6 @@
       "doc": "."
     },
     {
-      "typeFormat": "REGISTER",
-      "properties": [
-        {
-          "name": "isSeekable",
-          "doc": "Seek is possible in video source",
-          "type": "boolean"
-        },
-        {
-          "name": "seekableInit",
-          "doc": "First video position to do seek in ms",
-          "type": "int64"
-        },
-        {
-          "name": "seekableEnd",
-          "doc": "Last video position to do seek in ms",
-          "type": "int64"
-        },
-        {
-          "name": "duration",
-          "doc": "Video duration in ms",
-          "type": "int64"
-        }
-      ],
-      "name": "VideoInfo",
-      "doc": ""
-    },
-    {
       "typeFormat": "ENUM",
       "values": [
         "AES_128_CM_HMAC_SHA1_32",
@@ -824,12 +824,6 @@
     }
   ],
   "events": [
-    {
-      "properties": [],
-      "extends": "Media",
-      "name": "EndOfStream",
-      "doc": "Event raised when the stream that the element sends out is finished."
-    },
     {
       "properties": [],
       "extends": "Media",
@@ -1045,6 +1039,12 @@
       "extends": "Media",
       "name": "OnKeySoftLimit",
       "doc": "Fired when encryption is used and any stream reached the soft key usage limit, which means it will expire soon."
+    },
+    {
+      "properties": [],
+      "extends": "Media",
+      "name": "EndOfStream",
+      "doc": "Event raised when the stream that the element sends out is finished."
     }
   ]
 }
