@@ -22,7 +22,7 @@
       "java": {
         "packageName": "org.kurento.client",
         "mavenGroupId": "org.kurento",
-        "mavenArtifactId": "kms-api-elements",
+        "mavenArtifactId": "kurento-client",
         "mavenVersion": "6.18.0-SNAPSHOT"
       },
       "js": {
