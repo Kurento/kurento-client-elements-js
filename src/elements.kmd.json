@@ -7,7 +7,7 @@
       "name": "core",
       "version": "^6.18.1-dev",
       "mavenVersion": "[6.18.1-SNAPSHOT,7.0.0-SNAPSHOT)",
-      "npmVersion": "Kurento/kurento-client-core-js"
+      "npmVersion": "https://github.com/Kurento/kurento-client-core-js.git"
     }
   ],
   "code": {
@@ -28,8 +28,8 @@
       "js": {
         "nodeName": "kurento-client-elements",
         "npmDescription": "JavaScript Client API for Kurento Media Server",
-        "npmGit": "Kurento/kurento-client-elements-js",
-        "npmVersion": "Kurento/kurento-client-elements-js"
+        "npmGit": "https://github.com/Kurento/kurento-client-elements-js.git",
+        "npmVersion": "https://github.com/Kurento/kurento-client-elements-js.git"
       }
     },
     "implementation": {
