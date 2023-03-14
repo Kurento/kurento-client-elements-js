@@ -1,12 +1,12 @@
 {
   "name": "elements",
-  "version": "6.18.1-dev",
-  "kurentoVersion": "^6.18.1-dev",
+  "version": "7.0.0-dev",
+  "kurentoVersion": "^7.0.0-dev",
   "imports": [
     {
       "name": "core",
-      "version": "^6.18.1-dev",
-      "mavenVersion": "[6.18.1-SNAPSHOT,7.0.0-SNAPSHOT)",
+      "version": "^7.0.0-dev",
+      "mavenVersion": "[7.0.0-SNAPSHOT,8.0.0-SNAPSHOT)",
       "npmVersion": "https://github.com/Kurento/kurento-client-core-js.git"
     }
   ],
@@ -15,7 +15,7 @@
       "java": {
         "mavenGroupId": "org.kurento",
         "mavenArtifactId": "kms-api-elements",
-        "mavenVersion": "6.18.1-SNAPSHOT"
+        "mavenVersion": "7.0.0-SNAPSHOT"
       }
     },
     "api": {
@@ -23,7 +23,7 @@
         "packageName": "org.kurento.client",
         "mavenGroupId": "org.kurento",
         "mavenArtifactId": "kurento-client",
-        "mavenVersion": "6.18.1-SNAPSHOT"
+        "mavenVersion": "7.0.0-SNAPSHOT"
       },
       "js": {
         "nodeName": "kurento-client-elements",
@@ -298,7 +298,7 @@
     },
     {
       "name": "PlayerEndpoint",
-      "doc": "Retrieves content from external sources.\n<p>\n  PlayerEndpoint will access the given resource, read all available data, and\n  inject it into Kurento. Once this is is done, the injected video or audio\n  will be available for passing through any other Filter or Endpoint to which\n  the PlayerEndpoint gets connected.\n</p>\n<p>\n  The source can provide either seekable or non-seekable media; this will\n  dictate whether the PlayerEndpoint is able (or not) to seek through the file,\n  for example to jump to any given timestamp.\n</p>\n<p>The <strong>Source URI</strong> supports these formats:</p>\n<ul>\n  <li>\n    File: A file path that will be read from the local file system. Example:\n    <ul>\n      <li><code>file:///path/to/file</code></li>\n    </ul>\n  </li>\n  <li>\n    HTTP: Any file available in an HTTP server. Examples:\n    <ul>\n      <li><code>http(s)://{server-ip}/path/to/file</code></li>\n      <li>\n        <code>\n          http(s)://{username}:{password}@{server-ip}:{server-port}/path/to/file\n        </code>\n      </li>\n    </ul>\n  </li>\n  <li>\n    RTSP: Typically used to capture a feed from an IP Camera. Examples:\n    <ul>\n      <li><code>rtsp://{server-ip}</code></li>\n      <li>\n        <code>\n          rtsp://{username}:{password}@{server-ip}:{server-port}/path/to/file\n        </code>\n      </li>\n    </ul>\n  </li>\n  <li>\n    <strong>\n      NOTE (for current versions of Kurento 6.x): special characters are not\n      supported in <code>{username}</code> or <code>{password}</code>.\n    </strong>\n    This means that <code>{username}</code> cannot contain colons\n    (<code>:</code>), and <code>{password}</code> cannot contain 'at' signs\n    (<code>@</code>). This is a limitation of GStreamer 1.8 (the underlying\n    media framework behind Kurento), and is already fixed in newer versions\n    (which the upcoming Kurento 7.x will use).\n  </li>\n  <li>\n    <strong>\n      NOTE (for upcoming Kurento 7.x): special characters in\n      <code>{username}</code> or <code>{password}</code> must be url-encoded.\n    </strong>\n    This means that colons (<code>:</code>) should be replaced with\n    <code>%3A</code>, and 'at' signs (<code>@</code>) should be replaced with\n    <code>%40</code>.\n  </li>\n</ul>\n<p>\n  Note that\n  <strong> PlayerEndpoint requires read permissions to the source </strong>\n  ; otherwise, the media server won't be able to retrieve any data, and an\n  :rom:evt:`Error` will be fired. Make sure your application subscribes to this\n  event, otherwise troubleshooting issues will be difficult.\n</p>\n\n<p>The list of valid operations is:</p>\n<ul>\n  <li>\n    <strong><code>play</code></strong>\n    : Starts streaming media. If invoked after pause, it will resume playback.\n  </li>\n  <li>\n    <strong><code>stop</code></strong>\n    : Stops streaming media. If play is invoked afterwards, the file will be\n    streamed from the beginning.\n  </li>\n  <li>\n    <strong><code>pause</code></strong>\n    : Pauses media streaming. Play must be invoked in order to resume playback.\n  </li>\n  <li>\n    <strong><code>seek</code></strong>\n    : If the source supports seeking to a different time position, then the\n    PlayerEndpoint can:\n    <ul>\n      <li>\n        <strong><code>setPosition</code></strong>\n        : Allows to set the position in the file.\n      </li>\n      <li>\n        <strong><code>getPosition</code></strong>\n        : Returns the current position being streamed.\n      </li>\n    </ul>\n  </li>\n</ul>\n<h2>Events fired</h2>\n<ul>\n  <li>\n    <strong>EndOfStreamEvent</strong>: If the file is streamed completely.\n  </li>\n</ul>\n      ",
+      "doc": "Retrieves content from external sources.\n<p>\n  PlayerEndpoint will access the given resource, read all available data, and\n  inject it into Kurento. Once this is is done, the injected video or audio will\n  be available for passing through any other Filter or Endpoint to which the\n  PlayerEndpoint gets connected.\n</p>\n<p>\n  The source can provide either seekable or non-seekable media; this will\n  dictate whether the PlayerEndpoint is able (or not) to seek through the file,\n  for example to jump to any given timestamp.\n</p>\n<p>The <strong>Source URI</strong> supports these formats:</p>\n<ul>\n  <li>\n    File: A file path that will be read from the local file system. Example:\n    <ul>\n      <li><code>file:///path/to/file</code></li>\n    </ul>\n  </li>\n  <li>\n    HTTP: Any file available in an HTTP server. Examples:\n    <ul>\n      <li><code>http(s)://host/path/to/file</code></li>\n      <li>\n        <code>\n          http(s)://username:password@host:port/path/to/file\n        </code>\n      </li>\n    </ul>\n  </li>\n  <li>\n    RTSP: Typically used to capture a feed from an IP Camera. Examples:\n    <ul>\n      <li><code>rtsp://host</code></li>\n      <li>\n        <code>\n          rtsp://username:password@host:port/path/to/file?key=value&key=value\n        </code>\n      </li>\n    </ul>\n  </li>\n  <li>\n    <strong>\n      NOTE: Special characters must be\n      <a href='https://en.wikipedia.org/wiki/Query_string#URL_encoding'>\n        URL-encoded\n      </a>\n      in <code>username</code> and <code>password</code> fields.\n    </strong>\n  </li>\n</ul>\n<p>\n  Note that\n  <strong> PlayerEndpoint requires read permissions to the source </strong>\n  ; otherwise, the media server won't be able to retrieve any data, and an\n  :rom:evt:`Error` will be fired. Make sure your application subscribes to this\n  event, otherwise troubleshooting issues will be difficult.\n</p>\n\n<p>The list of valid operations is:</p>\n<ul>\n  <li>\n    <strong><code>play</code></strong>\n    : Starts streaming media. If invoked after pause, it will resume playback.\n  </li>\n  <li>\n    <strong><code>stop</code></strong>\n    : Stops streaming media. If play is invoked afterwards, the file will be\n    streamed from the beginning.\n  </li>\n  <li>\n    <strong><code>pause</code></strong>\n    : Pauses media streaming. Play must be invoked in order to resume playback.\n  </li>\n  <li>\n    <strong><code>seek</code></strong>\n    : If the source supports seeking to a different time position, then the\n    PlayerEndpoint can:\n    <ul>\n      <li>\n        <strong><code>setPosition</code></strong>\n        : Allows to set the position in the file.\n      </li>\n      <li>\n        <strong><code>getPosition</code></strong>\n        : Returns the current position being streamed.\n      </li>\n    </ul>\n  </li>\n</ul>\n<h2>Events fired</h2>\n<ul>\n  <li>\n    <strong>EndOfStreamEvent</strong>: If the file is streamed completely.\n  </li>\n</ul>\n      ",
       "extends": "UriEndpoint",
       "constructor": {
         "params": [
@@ -361,7 +361,7 @@
     },
     {
       "name": "RecorderEndpoint",
-      "doc": "Provides functionality to store media contents.\n<p>\n  RecorderEndpoint can store media into local files or send it to a remote\n  network storage. When another :rom:cls:`MediaElement` is connected to a\n  RecorderEndpoint, the media coming from the former will be muxed into\n  the selected recording format and stored in the designated location.\n</p>\n<p>\n  These parameters must be provided to create a RecorderEndpoint, and they\n  cannot be changed afterwards:\n</p>\n<ul>\n  <li>\n    <strong>Destination URI</strong>, where media will be stored. These formats\n    are supported:\n    <ul>\n      <li>\n        File: A file path that will be written into the local file system.\n        Example:\n        <ul>\n          <li><code>file:///path/to/file</code></li>\n        </ul>\n      </li>\n      <li>\n        HTTP: A POST request will be used against a remote server. The server\n        must support using the <i>chunked</i> encoding mode (HTTP header\n        <code>Transfer-Encoding: chunked</code>). Examples:\n        <ul>\n          <li><code>http(s)://{server-ip}/path/to/file</code></li>\n          <li>\n            <code>\n              http(s)://{username}:{password}@{server-ip}:{server-port}/path/to/file\n            </code>\n          </li>\n        </ul>\n      </li>\n      <li>\n        Relative URIs (with no schema) are supported. They are completed by\n        prepending a default URI defined by property <i>defaultPath</i>. This\n        property is defined in the configuration file\n        <i>/etc/kurento/modules/kurento/UriEndpoint.conf.ini</i>, and the\n        default value is <code>file:///var/lib/kurento/</code>\n      </li>\n      <li>\n        <strong>\n          NOTE (for current versions of Kurento 6.x): special characters are not\n          supported in <code>{username}</code> or <code>{password}</code>.\n        </strong>\n        This means that <code>{username}</code> cannot contain colons\n        (<code>:</code>), and <code>{password}</code> cannot contain 'at' signs\n        (<code>@</code>). This is a limitation of GStreamer 1.8 (the underlying\n        media framework behind Kurento), and is already fixed in newer versions\n        (which the upcoming Kurento 7.x will use).\n      </li>\n      <li>\n        <strong>\n          NOTE (for upcoming Kurento 7.x): special characters in\n          <code>{username}</code> or <code>{password}</code> must be\n          url-encoded.\n        </strong>\n        This means that colons (<code>:</code>) should be replaced with\n        '<code>%3A</code>', and 'at' signs (<code>@</code>) should be replaced\n        with '<code>%40</code>'.\n      </li>\n    </ul>\n  </li>\n  <li>\n    <strong>Media Profile</strong> (:rom:enum:`MediaProfileSpecType`), which\n    determines the video and audio encoding. See below for more details.\n  </li>\n  <li>\n    <strong>EndOfStream</strong> (optional), a parameter that dictates if the\n    recording should be automatically stopped once the EOS event is detected.\n  </li>\n</ul>\n<p>\n  Note that\n  <strong>\n    RecorderEndpoint requires write permissions to the destination\n  </strong>\n  ; otherwise, the media server won't be able to store any information, and an\n  :rom:evt:`Error` will be fired. Make sure your application subscribes to this\n  event, otherwise troubleshooting issues will be difficult.\n</p>\n<ul>\n  <li>\n    To write local files (if you use <code>file://</code>), the system user that\n    is owner of the media server process needs to have write permissions for the\n    requested path. By default, this user is named '<code>kurento</code>'.\n  </li>\n  <li>\n    To record through HTTP, the remote server must be accessible through the\n    network, and also have the correct write permissions for the destination\n    path.\n  </li>\n</ul>\n<p>\n  Recording will start as soon as the user invokes the\n  <code>record()</code> method. The recorder will then store, in the location\n  indicated, the media that the source is sending to the endpoint. If no media\n  is being received, or no endpoint has been connected, then the destination\n  will be empty. The recorder starts storing information into the file as soon\n  as it gets it.\n</p>\n<p>\n  <strong>Recording must be stopped</strong> when no more data should be stored.\n  This is done with the <code>stopAndWait()</code> method, which blocks and\n  returns only after all the information was stored correctly.\n</p>\n<p>\n  The source endpoint can be hot-swapped while the recording is taking place.\n  The recorded file will then contain different feeds. When switching video\n  sources, if the new video has different size, the recorder will retain the\n  size of the previous source. If the source is disconnected, the last frame\n  recorded will be shown for the duration of the disconnection, or until the\n  recording is stopped.\n</p>\n<p>\n  <strong>\n    NOTE: It is recommended to start recording only after media arrives.\n  </strong>\n  For this, you may use the <code>MediaFlowInStateChanged</code> and\n  <code>MediaFlowOutStateChanged</code>\n  events of your endpoints, and synchronize the recording with the moment media\n  comes into the Recorder.\n</p>\n<p>\n  <strong>\n    WARNING: All connected media types must be flowing to the RecorderEndpoint.\n  </strong>\n  If you used the default <code>connect()</code> method, it will assume both\n  AUDIO and VIDEO. Failing to provide both kinds of media will result in the\n  RecorderEndpoint creating an empty file and buffering indefinitely; the\n  recorder waits until all kinds of media start arriving, in order to\n  synchronize them appropriately.<br>\n  For audio-only or video-only recordings, make sure to use the correct,\n  media-specific variant of the <code>connect()</code> method.\n</p>\n<p>\n  For example:\n</p>\n<ol>\n  <li>\n    When a web browser's video arrives to Kurento via WebRTC, your\n    WebRtcEndpoint will emit a <code>MediaFlowOutStateChanged</code> event.\n  </li>\n  <li>\n    When video starts flowing from the WebRtcEndpoint to the RecorderEndpoint,\n    the RecorderEndpoint will emit a <code>MediaFlowInStateChanged</code> event.\n    You should start recording at this point.\n  </li>\n  <li>\n    You should only start recording when RecorderEndpoint has notified a\n    <code>MediaFlowInStateChanged</code> for ALL streams. So, if you record\n    AUDIO+VIDEO, your application must receive a\n    <code>MediaFlowInStateChanged</code> event for audio, and another\n    <code>MediaFlowInStateChanged</code> event for video.\n  </li>\n</ol>\n      ",
+      "doc": "Provides functionality to store media contents.\n<p>\n  RecorderEndpoint can store media into local files or send it to a remote\n  network storage. When another :rom:cls:`MediaElement` is connected to a\n  RecorderEndpoint, the media coming from the former will be muxed into the\n  selected recording format and stored in the designated location.\n</p>\n<p>\n  These parameters must be provided to create a RecorderEndpoint, and they\n  cannot be changed afterwards:\n</p>\n<ul>\n  <li>\n    <strong>Destination URI</strong>, where media will be stored. These formats\n    are supported:\n    <ul>\n      <li>\n        File: A file path that will be written into the local file system.\n        Example:\n        <ul>\n          <li><code>file:///path/to/file</code></li>\n        </ul>\n      </li>\n      <li>\n        HTTP: A POST request will be used against a remote server. The server\n        must support using the <i>chunked</i> encoding mode (HTTP header\n        <code>Transfer-Encoding: chunked</code>). Examples:\n        <ul>\n          <li><code>http(s)://host/path/to/file</code></li>\n          <li>\n            <code>\n              http(s)://username:password@host:port/path/to/file\n            </code>\n          </li>\n        </ul>\n      </li>\n      <li>\n        Relative URIs (with no schema) are supported. They are completed by\n        prepending a default URI defined by property <i>defaultPath</i>. This\n        property is defined in the configuration file\n        <i>/etc/kurento/modules/kurento/UriEndpoint.conf.ini</i>, and the\n        default value is <code>file:///var/lib/kurento/</code>\n      </li>\n      <li>\n        <strong>\n          NOTE: Special characters must be\n          <a href='https://en.wikipedia.org/wiki/Query_string#URL_encoding'>\n            URL-encoded\n          </a>\n          in <code>username</code> and <code>password</code> fields.\n        </strong>\n      </li>\n    </ul>\n  </li>\n  <li>\n    <strong>Media Profile</strong> (:rom:enum:`MediaProfileSpecType`), which\n    determines the video and audio encoding. See below for more details.\n  </li>\n  <li>\n    <strong>EndOfStream</strong> (optional), a parameter that dictates if the\n    recording should be automatically stopped once the EOS event is detected.\n  </li>\n</ul>\n<p>\n  Note that\n  <strong>\n    RecorderEndpoint requires write permissions to the destination\n  </strong>\n  ; otherwise, the media server won't be able to store any information, and an\n  :rom:evt:`Error` will be fired. Make sure your application subscribes to this\n  event, otherwise troubleshooting issues will be difficult.\n</p>\n<ul>\n  <li>\n    To write local files (if you use <code>file://</code>), the system user that\n    is owner of the media server process needs to have write permissions for the\n    requested path. By default, this user is named '<code>kurento</code>'.\n  </li>\n  <li>\n    To record through HTTP, the remote server must be accessible through the\n    network, and also have the correct write permissions for the destination\n    path.\n  </li>\n</ul>\n<p>\n  Recording will start as soon as the user invokes the\n  <code>record()</code> method. The recorder will then store, in the location\n  indicated, the media that the source is sending to the endpoint. If no media\n  is being received, or no endpoint has been connected, then the destination\n  will be empty. The recorder starts storing information into the file as soon\n  as it gets it.\n</p>\n<p>\n  <strong>Recording must be stopped</strong> when no more data should be stored.\n  This is done with the <code>stopAndWait()</code> method, which blocks and\n  returns only after all the information was stored correctly.\n</p>\n<p>\n  The source endpoint can be hot-swapped while the recording is taking place.\n  The recorded file will then contain different feeds. When switching video\n  sources, if the new video has different size, the recorder will retain the\n  size of the previous source. If the source is disconnected, the last frame\n  recorded will be shown for the duration of the disconnection, or until the\n  recording is stopped.\n</p>\n<p>\n  <strong>\n    NOTE: It is recommended to start recording only after media arrives.\n  </strong>\n  For this, you may use the <code>MediaFlowInStateChanged</code> and\n  <code>MediaFlowOutStateChanged</code>\n  events of your endpoints, and synchronize the recording with the moment media\n  comes into the Recorder.\n</p>\n<p>\n  <strong>\n    WARNING: All connected media types must be flowing to the RecorderEndpoint.\n  </strong>\n  If you used the default <code>connect()</code> method, it will assume both\n  AUDIO and VIDEO. Failing to provide both kinds of media will result in the\n  RecorderEndpoint creating an empty file and buffering indefinitely; the\n  recorder waits until all kinds of media start arriving, in order to\n  synchronize them appropriately.<br />\n  For audio-only or video-only recordings, make sure to use the correct,\n  media-specific variant of the <code>connect()</code> method.\n</p>\n<p>For example:</p>\n<ol>\n  <li>\n    When a web browser's video arrives to Kurento via WebRTC, your\n    WebRtcEndpoint will emit a <code>MediaFlowOutStateChanged</code> event.\n  </li>\n  <li>\n    When video starts flowing from the WebRtcEndpoint to the RecorderEndpoint,\n    the RecorderEndpoint will emit a <code>MediaFlowInStateChanged</code> event.\n    You should start recording at this point.\n  </li>\n  <li>\n    You should only start recording when RecorderEndpoint has notified a\n    <code>MediaFlowInStateChanged</code> for ALL streams. So, if you record\n    AUDIO+VIDEO, your application must receive a\n    <code>MediaFlowInStateChanged</code> event for audio, and another\n    <code>MediaFlowInStateChanged</code> event for video.\n  </li>\n</ol>\n      ",
       "extends": "UriEndpoint",
       "constructor": {
         "params": [
@@ -412,7 +412,7 @@
     },
     {
       "name": "RtpEndpoint",
-      "doc": "Endpoint that provides bidirectional content delivery capabilities with remote networked peers through RTP or SRTP protocol. An :rom:cls:`RtpEndpoint` contains paired sink and source :rom:cls:`MediaPad` for audio and video. This endpoint inherits from :rom:cls:`BaseRtpEndpoint`.\n      </p>\n      <p>\n      In order to establish an RTP/SRTP communication, peers engage in an SDP negotiation process, where one of the peers (the offerer) sends an offer, while the other peer (the offeree) responds with an answer. This endpoint can function in both situations\n      <ul style='list-style-type:circle'>\n        <li>\n          As offerer: The negotiation process is initiated by the media server\n          <ul>\n            <li>KMS generates the SDP offer through the generateOffer method. This offer must then be sent to the remote peer (the offeree) through the signaling channel, for processing.</li>\n            <li>The remote peer process the Offer, and generates an Answer to this offer. The Answer is sent back to the media server.</li>\n            <li>Upon receiving the Answer, the endpoint must invoke the processAnswer method.</li>\n          </ul>\n        </li>\n        <li>\n          As offeree: The negotiation process is initiated by the remote peer\n          <ul>\n            <li>The remote peer, acting as offerer, generates an SDP offer and sends it to the WebRTC endpoint in Kurento.</li>\n            <li>The endpoint will process the Offer invoking the processOffer method. The result of this method will be a string, containing an SDP Answer.</li>\n            <li>The SDP Answer must be sent back to the offerer, so it can be processed.</li>\n          </ul>\n        </li>\n      </ul>\n      </p>\n      <p>\n      In case of unidirectional connections (i.e. only one peer is going to send media), the process is more simple, as only the emitter needs to process an SDP. On top of the information about media codecs and types, the SDP must contain the IP of the remote peer, and the port where it will be listening. This way, the SDP can be mangled without needing to go through the exchange process, as the receiving peer does not need to process any answer.\n      </p>\n      <p>\n      The user can set some bandwidth limits that will be used during the negotiation process.\n      The default bandwidth range of the endpoint is 100kbps-500kbps, but it can be changed separately for input/output directions and for audio/video streams.\n      <ul style='list-style-type:circle'>\n        <li>\n          Input bandwidth control mechanism: Configuration interval used to inform remote peer the range of bitrates that can be pushed into this RtpEndpoint object. These values are announced in the SDP.\n          <ul>\n            <li>\n              setMaxVideoRecvBandwidth: sets Max bitrate limits expected for received video stream.\n            </li>\n            <li>\n              setMaxAudioRecvBandwidth: sets Max bitrate limits expected for received audio stream.\n            </li>\n          </ul>\n        </li>\n        <li>\n          Output bandwidth control mechanism: Configuration interval used to control bitrate of the output video stream sent to remote peer. Remote peers can also announce bandwidth limitation in their SDPs (through the b=<modifier>:<value> tag). Kurento will always enforce bitrate limitations specified by the remote peer over internal configurations.\n          <ul>\n            <li>\n              setMaxVideoSendBandwidth: sets Max bitrate limits for video sent to remote peer.\n            </li>\n            <li>\n              setMinVideoSendBandwidth: sets Min bitrate limits for audio sent to remote peer.\n            </li>\n          </ul>\n        </li>\n      </ul>\n      All bandwidth control parameters must be changed before the SDP negotiation takes place, and can't be modified afterwards.\n      TODO: What happens if the b=as tag form the SDP has a lower value than the one set in setMinVideoSendBandwidth?\n      </p>\n      <p>\n      Take into consideration that setting a too high upper limit for the output bandwidth can be a reason for the local network connection to be overflooded.\n      </p>\n      ",
+      "doc": "\nEndpoint that provides bidirectional content delivery capabilities through the\nRTP or SRTP protocols.\n<p>\n  An :rom:cls:`RtpEndpoint` contains paired sink and source :rom:cls:`MediaPad`\n  for audio and video. This endpoint inherits from :rom:cls:`BaseRtpEndpoint`.\n</p>\n<p>\n  In order to establish RTP/SRTP communications, peers first engage in an SDP\n  Offer/Answer negotiation process, where one of the peers (the offerer) sends\n  an SDP Offer, while the other peer (the answerer) responds with an SDP Answer.\n  This endpoint can work in both roles.\n</p>\n<ul>\n  <li>\n    <b>As offerer</b>: The negotiation process is initiated by the media server.\n    <ul>\n      <li>\n        Kurento generates the SDP Offer through the\n        <code>generateOffer()</code> method. This offer must then be sent to the\n        remote peer (the answerer) through the signaling channel.\n      </li>\n      <li>\n        The remote peer process the SDP Offer, and generates an SDP Answer. This\n        answer is then sent back to the media server.\n      </li>\n      <li>\n        Upon receiving the SDP Answer, this endpoint must process it with the\n        <code>processAnswer()</code> method.\n      </li>\n    </ul>\n  </li>\n  <li>\n    <b>As answerer</b>: The negotiation process is initiated by the remote peer.\n    <ul>\n      <li>\n        The remote peer, acting as offerer, generates an SDP Offer and sends it\n        to this endpoint.\n      </li>\n      <li>\n        This endpoint processes the SDP Offer with the\n        <code>processOffer()</code> method. The result of this method will be a\n        string, containing an SDP Answer.\n      </li>\n      <li>\n        The SDP Answer must then be sent back to the offerer, so it can be\n        processed by it.\n      </li>\n    </ul>\n  </li>\n</ul>\n<p>\n  In case of unidirectional connections (i.e. only one peer is going to send\n  media), the process is simpler, as only the sender needs to process an SDP\n  Offer. On top of the information about media codecs and types, the SDP must\n  contain the IP of the remote peer, and the port where it will be listening.\n  This way, the SDP can be mangled without needing to go through the exchange\n  process, as the receiving peer does not need to process any answer.\n</p>\n<h2>Bitrate management</h2>\n<p>\n  Check the documentation of :rom:cls:`BaseRtpEndpoint` for detailed information\n  about bitrate management.\n</p>\n      ",
       "extends": "BaseRtpEndpoint",
       "constructor": {
         "params": [
@@ -444,7 +444,7 @@
     },
     {
       "name": "WebRtcEndpoint",
-      "doc": "Control interface for Kurento WebRTC endpoint.\n<p>\n  This endpoint is one side of a peer-to-peer WebRTC communication, being the\n  other peer a WebRTC capable browser -using the RTCPeerConnection API-, a\n  native WebRTC app or even another Kurento Media Server.\n</p>\n<p>\n  In order to establish a WebRTC communication, peers engage in an SDP\n  negotiation process, where one of the peers (the offerer) sends an offer,\n  while the other peer (the offeree) responds with an answer. This endpoint can\n  function in both situations\n</p>\n<ul>\n  <li>\n    As offerer: The negotiation process is initiated by the media server\n    <ul>\n      <li>\n        KMS generates the SDP offer through the\n        <code>generateOffer</code> method. This <i>offer</i> must then be sent\n        to the remote peer (the offeree) through the signaling channel, for\n        processing.\n      </li>\n      <li>\n        The remote peer processes the <i>offer</i>, and generates an\n        <i>answer</i>. The <i>answer</i> is sent back to the media server.\n      </li>\n      <li>\n        Upon receiving the <i>answer</i>, the endpoint must invoke the\n        <code>processAnswer</code> method.\n      </li>\n    </ul>\n  </li>\n  <li>\n    As offeree: The negotiation process is initiated by the remote peer\n    <ul>\n      <li>\n        The remote peer, acting as offerer, generates an SDP <i>offer</i> and\n        sends it to the WebRTC endpoint in Kurento.\n      </li>\n      <li>\n        The endpoint will process the <i>offer</i> invoking the\n        <code>processOffer</code> method. The result of this method will be a\n        string, containing an SDP <i>answer</i>.\n      </li>\n      <li>\n        The SDP <i>answer</i> must be sent back to the offerer, so it can be\n        processed.\n      </li>\n    </ul>\n  </li>\n</ul>\n<p>\n  SDPs are sent without ICE candidates, following the Trickle ICE optimization.\n  Once the SDP negotiation is completed, both peers proceed with the ICE\n  discovery process, intended to set up a bidirectional media connection. During\n  this process, each peer\n</p>\n<ul>\n  <li>\n    Discovers ICE candidates for itself, containing pairs of IPs and ports.\n  </li>\n  <li>\n    ICE candidates are sent via the signaling channel as they are discovered, to\n    the remote peer for probing.\n  </li>\n  <li>\n    ICE connectivity checks are run as soon as the new candidate description,\n    from the remote peer, is available.\n  </li>\n</ul>\n<p>\n  Once a suitable pair of candidates (one for each peer) is discovered, the\n  media session can start. The harvesting process in Kurento, begins with the\n  invocation of the <code>gatherCandidates</code> method. Since the whole\n  Trickle ICE purpose is to speed-up connectivity, candidates are generated\n  asynchronously. Therefore, in order to capture the candidates, the user must\n  subscribe to the event <code>IceCandidateFound</code>. It is important that\n  the event listener is bound before invoking <code>gatherCandidates</code>,\n  otherwise a suitable candidate might be lost, and connection might not be\n  established.\n</p>\n<p>\n  It's important to keep in mind that WebRTC connection is an asynchronous\n  process, when designing interactions between different MediaElements. For\n  example, it would be pointless to start recording before media is flowing. In\n  order to be notified of state changes, the application can subscribe to events\n  generated by the WebRtcEndpoint. Following is a full list of events generated\n  by WebRtcEndpoint:\n</p>\n<ul>\n  <li>\n    <code>IceComponentStateChange</code>: This event informs only about changes\n    in the ICE connection state. Possible values are:\n    <ul>\n      <li><code>DISCONNECTED</code>: No activity scheduled</li>\n      <li><code>GATHERING</code>: Gathering local candidates</li>\n      <li><code>CONNECTING</code>: Establishing connectivity</li>\n      <li><code>CONNECTED</code>: At least one working candidate pair</li>\n      <li>\n        <code>READY</code>: ICE concluded, candidate pair selection is now final\n      </li>\n      <li>\n        <code>FAILED</code>: Connectivity checks have been completed, but media\n        connection was not established\n      </li>\n    </ul>\n    The transitions between states are covered in RFC5245. It could be said that\n    it's network-only, as it only takes into account the state of the network\n    connection, ignoring other higher level stuff, like DTLS handshake, RTCP\n    flow, etc. This implies that, while the component state is\n    <code>CONNECTED</code>, there might be no media flowing between the peers.\n    This makes this event useful only to receive low-level information about the\n    connection between peers. Even more, while other events might leave a\n    graceful period of time before firing, this event fires immediately after\n    the state change is detected.\n  </li>\n  <li>\n    <code>IceCandidateFound</code>: Raised when a new candidate is discovered.\n    ICE candidates must be sent to the remote peer of the connection. Failing to\n    do so for some or all of the candidates might render the connection\n    unusable.\n  </li>\n  <li>\n    <code>IceGatheringDone</code>: Raised when the ICE gathering process is\n    completed. This means that all candidates have already been discovered.\n  </li>\n  <li>\n    <code>NewCandidatePairSelected</code>: Raised when a new ICE candidate pair\n    gets selected. The pair contains both local and remote candidates being used\n    for a component. This event can be raised during a media session, if a new\n    pair of candidates with higher priority in the link are found.\n  </li>\n  <li><code>DataChannelOpen</code>: Raised when a data channel is open.</li>\n  <li><code>DataChannelClose</code>: Raised when a data channel is closed.</li>\n</ul>\n<p>\n  Registering to any of above events requires the application to provide a\n  callback function. Each event provides different information, so it is\n  recommended to consult the signature of the event listeners.\n</p>\n<p>\n  Flow control and congestion management is one of the most important features\n  of WebRTC. WebRTC connections start with the lowest bandwidth configured and\n  slowly ramps up to the maximum available bandwidth, or to the higher limit of\n  the exploration range in case no bandwidth limitation is detected. Notice that\n  WebRtcEndpoints in Kurento are designed in a way that multiple WebRTC\n  connections fed by the same stream share quality. When a new connection is\n  added, as it requires to start with low bandwidth, it will cause the rest of\n  connections to experience a transient period of degraded quality, until it\n  stabilizes its bitrate. This doesn't apply when transcoding is involved.\n  Transcoders will adjust their output bitrate based in bandwidth requirements,\n  but it won't affect the original stream. If an incoming WebRTC stream needs to\n  be transcoded, for whatever reason, all WebRtcEndpoints fed from transcoder\n  output will share a separate quality than the ones connected directly to the\n  original stream.\n</p>\n<p>\n  Note that the default <strong>VideoSendBandwidth</strong> range of the\n  endpoint is a VERY conservative one, and leads to a low maximum video quality.\n  Most applications will probably want to increase this to higher values such as\n  2000 kbps (2 mbps).\n</p>\n<p>\n  <strong>\n    Check the extended documentation of these parameters in\n    :rom:cls:`SdpEndpoint`, :rom:cls:`BaseRtpEndpoint`, and\n    :rom:cls:`RembParams`.\n  </strong>\n</p>\n<ul>\n  <li>\n    Input bandwidth: Values used to inform remote peers about the bitrate that\n    can be sent to this endpoint.\n    <ul>\n      <li>\n        <strong>MinVideoRecvBandwidth</strong>: Minimum input bitrate, requested\n        from WebRTC senders with REMB (Default: 30 Kbps).\n      </li>\n      <li>\n        <strong>MaxAudioRecvBandwidth</strong> and\n        <strong>MaxVideoRecvBandwidth</strong>: Maximum input bitrate, signaled\n        in SDP Offers to WebRTC and RTP senders (Default: unlimited).\n      </li>\n    </ul>\n  </li>\n  <li>\n    Output bandwidth: Values used to control bitrate of the video streams sent\n    to remote peers. It is important to keep in mind that pushed bitrate depends\n    on network and remote peer capabilities. Remote peers can also announce\n    bandwidth limitation in their SDPs (through the\n    <code>b={modifier}:{value}</code> attribute). Kurento will always enforce\n    bitrate limitations specified by the remote peer over internal\n    configurations.\n    <ul>\n      <li>\n        <strong>MinVideoSendBandwidth</strong>: REMB override of minimum bitrate\n        sent to WebRTC receivers (Default: 100 Kbps).\n      </li>\n      <li>\n        <strong>MaxVideoSendBandwidth</strong>: REMB override of maximum bitrate\n        sent to WebRTC receivers (Default: 500 Kbps).\n      </li>\n      <li>\n        <strong>RembParams.rembOnConnect</strong>: Initial local REMB bandwidth\n        estimation that gets propagated when a new endpoint is connected.\n      </li>\n    </ul>\n  </li>\n</ul>\n<p>\n  <strong>\n    All bandwidth control parameters must be changed before the SDP negotiation\n    takes place, and can't be changed afterwards.\n  </strong>\n</p>\n<p>\n  DataChannels allow other media elements that make use of the DataPad, to send\n  arbitrary data. For instance, if there is a filter that publishes event\n  information, it'll be sent to the remote peer through the channel. There is no\n  API available for programmers to make use of this feature in the\n  WebRtcElement. DataChannels can be configured to provide the following:\n</p>\n<ul>\n  <li>Reliable or partially reliable delivery of sent messages</li>\n  <li>In-order or out-of-order delivery of sent messages</li>\n</ul>\n<p>\n  Unreliable, out-of-order delivery is equivalent to raw UDP semantics. The\n  message may make it, or it may not, and order is not important. However, the\n  channel can be configured to be <i>partially reliable</i> by specifying the\n  maximum number of retransmissions or setting a time limit for retransmissions:\n  the WebRTC stack will handle the acknowledgments and timeouts.\n</p>\n<p>\n  The possibility to create DataChannels in a WebRtcEndpoint must be explicitly\n  enabled when creating the endpoint, as this feature is disabled by default. If\n  this is the case, they can be created invoking the createDataChannel method.\n  The arguments for this method, all of them optional, provide the necessary\n  configuration:\n</p>\n<ul>\n  <li>\n    <code>label</code>: assigns a label to the DataChannel. This can help\n    identify each possible channel separately.\n  </li>\n  <li>\n    <code>ordered</code>: specifies if the DataChannel guarantees order, which\n    is the default mode. If maxPacketLifetime and maxRetransmits have not been\n    set, this enables reliable mode.\n  </li>\n  <li>\n    <code>maxPacketLifeTime</code>: The time window in milliseconds, during\n    which transmissions and retransmissions may take place in unreliable mode.\n    This forces unreliable mode, even if <code>ordered</code> has been\n    activated.\n  </li>\n  <li>\n    <code>maxRetransmits</code>: maximum number of retransmissions that are\n    attempted in unreliable mode. This forces unreliable mode, even if\n    <code>ordered</code> has been activated.\n  </li>\n  <li>\n    <code>Protocol</code>: Name of the subprotocol used for data communication.\n  </li>\n</ul>\n      ",
+      "doc": "\nEndpoint that provides bidirectional WebRTC capabilities for Kurento.\n<p>\n  This endpoint is one side of a peer-to-peer WebRTC communication, where the\n  other peer is either of a WebRTC capable browser (using the\n  <em>RTCPeerConnection</em> API), a native WebRTC app, or even another Kurento\n  Media Server instance.\n</p>\n<p>\n  In order to establish WebRTC communications, peers first engage in an SDP\n  Offer/Answer negotiation process, where one of the peers (the offerer) sends\n  an SDP Offer, while the other peer (the answerer) responds with an SDP Answer.\n  This endpoint can work in both roles.\n</p>\n<ul>\n  <li>\n    <b>As offerer</b>: The negotiation process is initiated by the media server.\n    <ul>\n      <li>\n        Kurento generates the SDP Offer through the\n        <code>generateOffer()</code> method. This offer must then be sent to the\n        remote peer (the answerer) through the signaling channel.\n      </li>\n      <li>\n        The remote peer process the SDP Offer, and generates an SDP Answer. This\n        answer is then sent back to the media server.\n      </li>\n      <li>\n        Upon receiving the SDP Answer, this endpoint must process it with the\n        <code>processAnswer()</code> method.\n      </li>\n    </ul>\n  </li>\n  <li>\n    <b>As answerer</b>: The negotiation process is initiated by the remote peer.\n    <ul>\n      <li>\n        The remote peer, acting as offerer, generates an SDP Offer and sends it\n        to this endpoint.\n      </li>\n      <li>\n        This endpoint processes the SDP Offer with the\n        <code>processOffer()</code> method. The result of this method will be a\n        string, containing an SDP Answer.\n      </li>\n      <li>\n        The SDP Answer must then be sent back to the offerer, so it can be\n        processed by it.\n      </li>\n    </ul>\n  </li>\n</ul>\n<h2>ICE candidates and connectivity checks</h2>\n<p>\n  SDPs are sent without ICE candidates, following the Trickle ICE optimization.\n  Once the SDP negotiation is completed, both peers proceed with the ICE\n  discovery process, intended to set up a bidirectional media connection. During\n  this process, each peer...\n</p>\n<ul>\n  <li>\n    Discovers ICE candidates for itself, containing pairs of IPs and ports.\n  </li>\n  <li>\n    ICE candidates are sent via the signaling channel as they are discovered, to\n    the remote peer for probing.\n  </li>\n  <li>\n    ICE connectivity checks are run as soon as the new candidate description,\n    from the remote peer, is available.\n  </li>\n</ul>\n<p>\n  Once a suitable pair of candidates (one for each peer) is discovered, the\n  media session can start. The harvesting process in Kurento, begins with the\n  invocation of the <code>gatherCandidates()</code> method. Since the whole\n  Trickle ICE purpose is to speed-up connectivity, candidates are generated\n  asynchronously. Therefore, in order to capture the candidates, the user must\n  subscribe to the event <code>IceCandidateFound</code>. It is important that\n  the event listener is bound before invoking <code>gatherCandidates()</code>,\n  otherwise a suitable candidate might be lost, and connection might not be\n  established.\n</p>\n<p>\n  It is important to keep in mind that WebRTC connection is an asynchronous\n  process, when designing interactions between different MediaElements. For\n  example, it would be pointless to start recording before media is flowing. In\n  order to be notified of state changes, the application can subscribe to events\n  generated by the WebRtcEndpoint. Following is a full list of events generated\n  by WebRtcEndpoint:\n</p>\n<ul>\n  <li>\n    <code>IceComponentStateChanged</code>: This event informs only about changes\n    in the ICE connection state. Possible values are:\n    <ul>\n      <li><code>DISCONNECTED</code>: No activity scheduled</li>\n      <li><code>GATHERING</code>: Gathering local candidates</li>\n      <li><code>CONNECTING</code>: Establishing connectivity</li>\n      <li><code>CONNECTED</code>: At least one working candidate pair</li>\n      <li>\n        <code>READY</code>: ICE concluded, candidate pair selection is now final\n      </li>\n      <li>\n        <code>FAILED</code>: Connectivity checks have been completed, but media\n        connection was not established\n      </li>\n    </ul>\n    The transitions between states are covered in RFC5245. It could be said that\n    it is network-only, as it only takes into account the state of the network\n    connection, ignoring other higher level stuff, like DTLS handshake, RTCP\n    flow, etc. This implies that, while the component state is\n    <code>CONNECTED</code>, there might be no media flowing between the peers.\n    This makes this event useful only to receive low-level information about the\n    connection between peers. Even more, while other events might leave a\n    graceful period of time before firing, this event fires immediately after\n    the state change is detected.\n  </li>\n  <li>\n    <code>IceCandidateFound</code>: Raised when a new candidate is discovered.\n    ICE candidates must be sent to the remote peer of the connection. Failing to\n    do so for some or all of the candidates might render the connection\n    unusable.\n  </li>\n  <li>\n    <code>IceGatheringDone</code>: Raised when the ICE gathering process is\n    completed. This means that all candidates have already been discovered.\n  </li>\n  <li>\n    <code>NewCandidatePairSelected</code>: Raised when a new ICE candidate pair\n    gets selected. The pair contains both local and remote candidates being used\n    for a component. This event can be raised during a media session, if a new\n    pair of candidates with higher priority in the link are found.\n  </li>\n  <li><code>DataChannelOpened</code>: Raised when a data channel is open.</li>\n  <li><code>DataChannelClosed</code>: Raised when a data channel is closed.</li>\n</ul>\n<p>\n  Registering to any of above events requires the application to provide a\n  callback function. Each event provides different information, so it is\n  recommended to consult the signature of the event listeners.\n</p>\n<h2>Bitrate management and network congestion control</h2>\n<p>\n  Congestion control is one of the most important features of WebRTC. WebRTC\n  connections start with the lowest bandwidth configured and slowly ramps up to\n  the maximum available bandwidth, or to the higher limit of the allowed range\n  in case no bandwidth limitation is detected.\n</p>\n<p>\n  Notice that WebRtcEndpoints in Kurento are designed in a way that\n  <strong>\n    multiple WebRTC connections fed by the same stream, share the same bitrate\n    limits.\n  </strong>\n  When a new connection is added, as it requires to start with low bandwidth, it\n  will cause the rest of connections to experience a transient period of\n  degraded quality, until it stabilizes its bitrate. This doesn't apply when\n  transcoding is involved; transcoders will adjust their output bitrate based in\n  the receiver requirements, but it won't affect the original stream.\n</p>\n<p>\n  If an incoming WebRTC stream needs to be transcoded, for whatever reason, all\n  WebRtcEndpoints fed from the transcoder output will share a separate quality\n  than the ones connected directly to the original stream.\n</p>\n<p>\n  <strong>\n    Note that the default <em>MaxVideoSendBandwidth</em> is a VERY conservative\n    value, and leads to a low maximum video quality. Most applications will\n    probably want to increase this to higher values such as 2000 kbps (2 Mbps).\n  </strong>\n  Check the documentation of :rom:cls:`BaseRtpEndpoint` and\n  :rom:cls:`RembParams` for detailed information about bitrate management.\n</p>\n<h3>Keyframe requests (PLI/FIR)</h3>\n<p>\n  WebRTC allows receivers to emit keyframe requests for the senders, by means of\n  RTCP Feedback messages called PLI (Picture Loss Indication) and/or FIR (Full\n  Intra-frame Request). Kurento supports this mechanism: PLI and FIR requests\n  that are emitted by a receiver will be forwarded to the sender. This way, the\n  encoder of the video (e.g. a web browser) can decide if a new keyframe should\n  be generated. Sometimes Kurento itself acts as encoder when transcoding is\n  enabled, so in this case it is Kurento itself the one generating keyframes.\n</p>\n<p>\n  On top of this, a common technique used for streaming is to forcefully request\n  new keyframes. Either in fixed intervals, or explicitly by the application.\n  Kurento doesn't support the former, but the latter is possible by calling\n  <code>requestKeyframe()</code> from a subscribing element (i.e. an endpoint\n  that sends data out from the Kurento Pipeline).\n</p>\n<h2>WebRTC Data Channels</h2>\n<p>\n  DataChannels allow other media elements that make use of the DataPad, to send\n  arbitrary data. For instance, if there is a filter that publishes event\n  information, it will be sent to the remote peer through the channel. There is\n  no API available for programmers to make use of this feature in the\n  WebRtcElement. DataChannels can be configured to provide the following:\n</p>\n<ul>\n  <li>Reliable or partially reliable delivery of sent messages</li>\n  <li>In-order or out-of-order delivery of sent messages</li>\n</ul>\n<p>\n  Unreliable, out-of-order delivery is equivalent to raw UDP semantics. The\n  message may make it, or it may not, and order is not important. However, the\n  channel can be configured to be <i>partially reliable</i> by specifying the\n  maximum number of retransmissions or setting a time limit for retransmissions:\n  the WebRTC stack will handle the acknowledgments and timeouts.\n</p>\n<p>\n  The possibility to create DataChannels in a WebRtcEndpoint must be explicitly\n  enabled when creating the endpoint, as this feature is disabled by default. If\n  this is the case, they can be created invoking the createDataChannel method.\n  The arguments for this method, all of them optional, provide the necessary\n  configuration:\n</p>\n<ul>\n  <li>\n    <code>label</code>: assigns a label to the DataChannel. This can help\n    identify each possible channel separately.\n  </li>\n  <li>\n    <code>ordered</code>: specifies if the DataChannel guarantees order, which\n    is the default mode. If maxPacketLifetime and maxRetransmits have not been\n    set, this enables reliable mode.\n  </li>\n  <li>\n    <code>maxPacketLifeTime</code>: The time window in milliseconds, during\n    which transmissions and retransmissions may take place in unreliable mode.\n    This forces unreliable mode, even if <code>ordered</code> has been\n    activated.\n  </li>\n  <li>\n    <code>maxRetransmits</code>: maximum number of retransmissions that are\n    attempted in unreliable mode. This forces unreliable mode, even if\n    <code>ordered</code> has been activated.\n  </li>\n  <li>\n    <code>Protocol</code>: Name of the subprotocol used for data communication.\n  </li>\n</ul>\n      ",
       "extends": "BaseRtpEndpoint",
       "constructor": {
         "params": [
@@ -483,7 +483,7 @@
           },
           {
             "name": "qosDscp",
-            "doc": "DSCP value to be used in network traffic sent from this endpoint\n              <p>\n              If this parameter is present with a value different to NO_VALUE, all traffic sent from this WebRTCEndpoint will be marked with the correspondent\n              DSCP value according to the DiffServ architecture. This may provide better handling of network traffic according to its characteristics associated to \n              its DSCP value. This better handling includes priority in forwarding traffic and probablity of packet drop in case of network congestion.\n              <p>\n              It must be taken into account that on Internet not all intermediate routers are guaranteed to enforce those DSCP values, even it is possible that \n              certain routers just block traffic marked with specific DSCP values, as discussed here https://datatracker.ietf.org/doc/html/rfc8835#section-4.2.\n              <p> \n              So, this feature must be managed with care and is mostly intended for private networks, where the network proprietor can configure and guarantee \n              DSCP management in all routers.",
+            "doc": "DSCP value to be used in network traffic sent from this endpoint\n              <p>\n              If this parameter is present with a value different to NO_VALUE, all traffic sent from this WebRTCEndpoint will be marked with the correspondent\n              DSCP value according to the DiffServ architecture. This may provide better handling of network traffic according to its characteristics associated to\n              its DSCP value. This better handling includes priority in forwarding traffic and probability of packet drop in case of network congestion.\n              <p>\n              It must be taken into account that on Internet not all intermediate routers are guaranteed to enforce those DSCP values, even it is possible that\n              certain routers just block traffic marked with specific DSCP values, as discussed here https://datatracker.ietf.org/doc/html/rfc8835#section-4.2.\n              <p>\n              So, this feature must be managed with care and is mostly intended for private networks, where the network proprietor can configure and guarantee\n              DSCP management in all routers.",
             "type": "DSCPValue",
             "optional": true,
             "defaultValue": "NO_VALUE"
@@ -525,11 +525,6 @@
         {
           "name": "externalIPv6",
           "doc": "External IPv6 address of the media server.\n<p>\n  Forces all local IPv6 ICE candidates to have the given address. This is really\n  nothing more than a hack, but it's very effective to force a public IP address\n  when one is known in advance for the media server. In doing so, KMS will not\n  need a STUN or TURN server, but remote peers will still be able to contact it.\n</p>\n<p>\n  You can try using this setting if KMS is deployed on a publicly accessible\n  server, without NAT, and with a static public IP address. But if it doesn't\n  work for you, just go back to configuring a STUN or TURN server for ICE.\n</p>\n<p>\n  Only set this parameter if you know what you're doing, and you understand 100%\n  WHY you need it. For the majority of cases, you should just prefer to\n  configure a STUN or TURN server.\n</p>\n<p><code>externalIPv6</code> is a single IPv6 address.</p>\n<p>Example:</p>\n<ul>\n  <li><code>externalIPv6=2001:0db8:85a3:0000:0000:8a2e:0370:7334</code></li>\n</ul>\n          ",
-          "type": "String"
-        },
-        {
-          "name": "externalAddress",
-          "doc": "External IP address of the media server.\n<p>\n  Forces all local IPv4 and IPv6 ICE candidates to have the given address. This\n  is really nothing more than a hack, but it's very effective to force a public\n  IP address when one is known in advance for the media server. In doing so, KMS\n  will not need a STUN or TURN server, but remote peers will still be able to\n  contact it.\n</p>\n<p>\n  You can try using this setting if KMS is deployed on a publicly accessible\n  server, without NAT, and with a static public IP address. But if it doesn't\n  work for you, just go back to configuring a STUN or TURN server for ICE.\n</p>\n<p>\n  Only set this parameter if you know what you're doing, and you understand 100%\n  WHY you need it. For the majority of cases, you should just prefer to\n  configure a STUN or TURN server.\n</p>\n<p><code>externalAddress</code> is a single IPv4 or IPv6 address.</p>\n<p>Examples:</p>\n<ul>\n  <li><code>externalAddress=198.51.100.1</code></li>\n  <li><code>externalAddress=2001:0db8:85a3:0000:0000:8a2e:0370:7334</code></li>\n</ul>\n@deprecated Use <code>externalIPv4</code> and/or <code>externalIPv6</code> instead.\n          ",
           "type": "String"
         },
         {
@@ -616,18 +611,10 @@
         }
       ],
       "events": [
-        "OnIceCandidate",
         "IceCandidateFound",
-        "OnIceGatheringDone",
         "IceGatheringDone",
-        "OnIceComponentStateChanged",
-        "IceComponentStateChange",
         "IceComponentStateChanged",
-        "OnDataChannelOpened",
-        "DataChannelOpen",
         "DataChannelOpened",
-        "OnDataChannelClosed",
-        "DataChannelClose",
         "DataChannelClosed",
         "NewCandidatePairSelected"
       ]
@@ -643,52 +630,6 @@
       ],
       "name": "GapsFixMethod",
       "doc": "How to fix gaps when they are found in the recorded stream.\n<p>\nGaps are typically caused by packet loss in the input streams, such as when an\nRTP or WebRTC media flow suffers from network congestion and some packets don't\narrive at the media server.\n</p>\n<p>Different ways of handling gaps have different tradeoffs:</p>\n<ul>\n  <li>\n    <strong>NONE</strong>: Do not fix gaps.\n    <p>\n      Leave the stream as-is, and store it with any gaps that the stream might\n      have. Some players are clever enough to adapt to this during playback, so\n      that the gaps are reduced to a minimum and no problems are perceived by\n      the user; other players are not so sophisticated, and will struggle trying\n      to decode a file that contains gaps. For example, trying to play such a\n      file directly with Chrome will cause lipsync issues (audio and video will\n      fall out of sync).\n    </p>\n    <p>\n      This is the best choice if you need consistent durations across multiple\n      simultaneous recordings, or if you are anyway going to post-process the\n      recordings (e.g. with an extra FFmpeg step).\n    </p>\n    <p>\n      For example, assume a session length of 15 seconds: packets arrive\n      correctly during the first 5 seconds, then there is a gap, then data\n      arrives again for the last 5 seconds. Also, for simplicity, assume 1 frame\n      per second. With no fix for gaps, the RecorderEndpoint will store each\n      frame as-is, with these timestamps:\n    </p>\n    <pre>\n      frame 1  - 00:01\n      frame 2  - 00:02\n      frame 3  - 00:03\n      frame 4  - 00:04\n      frame 5  - 00:05\n      frame 11 - 00:11\n      frame 12 - 00:12\n      frame 13 - 00:13\n      frame 14 - 00:14\n      frame 15 - 00:15\n    </pre>\n    <p>\n      Notice how the frames between 6 to 10 are missing, but the last 5 frames\n      still conserve their original timestamp. The total length of the file is\n      detected as 15 seconds by most players, although playback could stutter or\n      hang during the missing section.\n    </p>\n  </li>\n  <li>\n    <strong>GENPTS</strong>: Adjust timestamps to generate a smooth progression\n    over all frames.\n    <p>\n      This technique rewrites the timestamp of all frames, so that gaps are\n      suppressed. It provides the best playback experience for recordings that\n      need to be played as-is (i.e. they won't be post-processed). However,\n      fixing timestamps might cause a change in the total duration of a file. So\n      different recordings from the same session might end up with slightly\n      different durations.\n    </p>\n    <p>\n      In our example, the RecorderEndpoint will change all timestamps that\n      follow a gap in the stream, and store each frame as follows:\n    </p>\n    <pre>\n      frame 1  - 00:01\n      frame 2  - 00:02\n      frame 3  - 00:03\n      frame 4  - 00:04\n      frame 5  - 00:05\n      frame 11 - 00:06\n      frame 12 - 00:07\n      frame 13 - 00:08\n      frame 14 - 00:09\n      frame 15 - 00:10\n    </pre>\n    <p>\n      Notice how the frames between 6 to 10 are missing, and the last 5 frames\n      have their timestamps corrected to provide a smooth increment over the\n      previous ones. The total length of the file is detected as 10 seconds, and\n      playback should be correct throughout the whole file.\n    </p>\n  </li>\n  <li>\n    <strong>FILL_IF_TRANSCODING</strong>: (NOT IMPLEMENTED YET).\n    <p>This is a proposal for future improvement of the RecorderEndpoint.</p>\n    <p>\n      It is possible to perform a dynamic adaptation of audio rate and add frame\n      duplication to the video, such that the missing parts are filled with\n      artificial data. This has the advantage of providing a smooth playback\n      result, and at the same time conserving all original timestamps.\n    </p>\n    <p>\n      However, the main issue with this method is that it requires accessing the\n      decoded media; i.e., transcoding must be active. For this reason, the\n      proposal is to offer this option to be enabled only when transcoding would\n      still happen anyways.\n    </p>\n    <p>\n      In our example, the RecorderEndpoint would change all missing frames like\n      this:\n    </p>\n    <pre>\n      frame 1  - 00:01\n      frame 2  - 00:02\n      frame 3  - 00:03\n      frame 4  - 00:04\n      frame 5  - 00:05\n      fake frame - 00:06\n      fake frame - 00:07\n      fake frame - 00:08\n      fake frame - 00:09\n      fake frame - 00:10\n      frame 11 - 00:11\n      frame 12 - 00:12\n      frame 13 - 00:13\n      frame 14 - 00:14\n      frame 15 - 00:15\n    </pre>\n    <p>\n      This joins the best of both worlds: on one hand, the playback should be\n      smooth and even the most basic players should be able to handle the\n      recording files without issue. On the other, the total length of the file\n      is left unmodified, so it matches with the expected duration of the\n      sessions that are being recorded.\n    </p>\n  </li>\n</ul>\n      "
-    },
-    {
-      "typeFormat": "ENUM",
-      "values": [
-        "WEBM",
-        "MKV",
-        "MP4",
-        "WEBM_VIDEO_ONLY",
-        "WEBM_AUDIO_ONLY",
-        "MKV_VIDEO_ONLY",
-        "MKV_AUDIO_ONLY",
-        "MP4_VIDEO_ONLY",
-        "MP4_AUDIO_ONLY",
-        "JPEG_VIDEO_ONLY",
-        "KURENTO_SPLIT_RECORDER",
-        "FLV"
-      ],
-      "name": "MediaProfileSpecType",
-      "doc": "Media profile, used by the RecorderEndpoint builder to specify the codecs and media container that should be used for the recordings."
-    },
-    {
-      "typeFormat": "REGISTER",
-      "properties": [
-        {
-          "name": "isSeekable",
-          "doc": "Seek is possible in video source",
-          "type": "boolean"
-        },
-        {
-          "name": "seekableInit",
-          "doc": "First video position to do seek in ms",
-          "type": "int64"
-        },
-        {
-          "name": "seekableEnd",
-          "doc": "Last video position to do seek in ms",
-          "type": "int64"
-        },
-        {
-          "name": "duration",
-          "doc": "Video duration in ms",
-          "type": "int64"
-        }
-      ],
-      "name": "VideoInfo",
-      "doc": ""
     },
     {
       "typeFormat": "REGISTER",
@@ -729,19 +670,9 @@
       "typeFormat": "REGISTER",
       "properties": [
         {
-          "name": "streamID",
-          "doc": "Stream ID of the ICE connection.\n@deprecated Use <code>streamId</code> instead.\n          ",
-          "type": "String"
-        },
-        {
           "name": "streamId",
           "doc": "Stream ID of the ICE connection",
           "type": "String"
-        },
-        {
-          "name": "componentID",
-          "doc": "Component ID of the ICE connection\n@deprecated Use <code>componentId</code> instead.\n          ",
-          "type": "int"
         },
         {
           "name": "componentId",
@@ -841,7 +772,26 @@
         "LE"
       ],
       "name": "DSCPValue",
-      "doc": "Possible DSCP values \n      <p>\n      WebRTC recommended values are taken from RFC 8837 https://datatracker.ietf.org/doc/html/rfc8837#section-5 , These are the values from AUDIO_VERYLOW to DATA_HIGH. First element in the \n      name indicates kind of traffic that it should apply to, the second indicates relative priority. For video, a third field would indicate if the traffic is intended for high throughput or not.\n      As indicated on RFC 8837 section 5 diagram:\n\n          +=======================+==========+=====+============+============+\n          |       Flow Type       | Very Low | Low |   Medium   |    High    |\n          +=======================+==========+=====+============+============+\n          |         Audio         |  LE (1)  |  DF |  EF (46)   |  EF (46)   |\n          |                       |          | (0) |            |            |\n          +-----------------------+----------+-----+------------+------------+\n          +-----------------------+----------+-----+------------+------------+\n          |   Interactive Video   |  LE (1)  |  DF | AF42, AF43 | AF41, AF42 |\n          | with or without Audio |          | (0) |  (36, 38)  |  (34, 36)  |\n          +-----------------------+----------+-----+------------+------------+\n          +-----------------------+----------+-----+------------+------------+\n          | Non-Interactive Video |  LE (1)  |  DF | AF32, AF33 | AF31, AF32 |\n          | with or without Audio |          | (0) |  (28, 30)  |  (26, 28)  |\n          +-----------------------+----------+-----+------------+------------+\n          +-----------------------+----------+-----+------------+------------+\n          |          Data         |  LE (1)  |  DF |    AF11    |    AF21    |\n          |                       |          | (0) |            |            |\n          +-----------------------+----------+-----+------------+------------+\n\n      As indicated also in RFC, non interactive video is not considered\n      <p>\n      Apart from the WebRTC recommended values, we also include all possible values are referenced in http://www.iana.org/assignments/dscp-registry/dscp-registry.xml of course some of \n      those values are synonyms for the WebRTC recommended ones, they are included mainly for completeness\n      <p>\n      And as a last point, we include a shorthand for Chrome supported markings for low  (CS0), very low (CS1), medium (CS7) and high (CS7) priorities in priority property for RTCRtpSender parameters. See https://developer.mozilla.org/en-US/docs/Web/API/RTCRtpSender/setParameters\n      <p>\n      This only covers outgoing network packets from KMS, to complete the solution, DSCP must be also requested on client, unfortunately for traffic on the other direction, this must be requested to the \n      browser or client. On browser, the client application needs to use the following API https://www.w3.org/TR/webrtc-priority/"
+      "doc": "Possible DSCP values\n      <p>\n      WebRTC recommended values are taken from RFC 8837 https://datatracker.ietf.org/doc/html/rfc8837#section-5 , These are the values from AUDIO_VERYLOW to DATA_HIGH. First element in the\n      name indicates kind of traffic that it should apply to, the second indicates relative priority. For video, a third field would indicate if the traffic is intended for high throughput or not.\n      As indicated on RFC 8837 section 5 diagram:\n\n          +=======================+==========+=====+============+============+\n          |       Flow Type       | Very Low | Low |   Medium   |    High    |\n          +=======================+==========+=====+============+============+\n          |         Audio         |  LE (1)  |  DF |  EF (46)   |  EF (46)   |\n          |                       |          | (0) |            |            |\n          +-----------------------+----------+-----+------------+------------+\n          +-----------------------+----------+-----+------------+------------+\n          |   Interactive Video   |  LE (1)  |  DF | AF42, AF43 | AF41, AF42 |\n          | with or without Audio |          | (0) |  (36, 38)  |  (34, 36)  |\n          +-----------------------+----------+-----+------------+------------+\n          +-----------------------+----------+-----+------------+------------+\n          | Non-Interactive Video |  LE (1)  |  DF | AF32, AF33 | AF31, AF32 |\n          | with or without Audio |          | (0) |  (28, 30)  |  (26, 28)  |\n          +-----------------------+----------+-----+------------+------------+\n          +-----------------------+----------+-----+------------+------------+\n          |          Data         |  LE (1)  |  DF |    AF11    |    AF21    |\n          |                       |          | (0) |            |            |\n          +-----------------------+----------+-----+------------+------------+\n\n      As indicated also in RFC, non interactive video is not considered\n      <p>\n      Apart from the WebRTC recommended values, we also include all possible values are referenced in http://www.iana.org/assignments/dscp-registry/dscp-registry.xml of course some of\n      those values are synonyms for the WebRTC recommended ones, they are included mainly for completeness\n      <p>\n      And as a last point, we include a shorthand for Chrome supported markings for low  (CS0), very low (CS1), medium (CS7) and high (CS7) priorities in priority property for RTCRtpSender parameters. See https://developer.mozilla.org/en-US/docs/Web/API/RTCRtpSender/setParameters\n      <p>\n      This only covers outgoing network packets from KMS, to complete the solution, DSCP must be also requested on client, unfortunately for traffic on the other direction, this must be requested to the\n      browser or client. On browser, the client application needs to use the following API https://www.w3.org/TR/webrtc-priority/"
+    },
+    {
+      "typeFormat": "ENUM",
+      "values": [
+        "WEBM",
+        "MKV",
+        "MP4",
+        "WEBM_VIDEO_ONLY",
+        "WEBM_AUDIO_ONLY",
+        "MKV_VIDEO_ONLY",
+        "MKV_AUDIO_ONLY",
+        "MP4_VIDEO_ONLY",
+        "MP4_AUDIO_ONLY",
+        "JPEG_VIDEO_ONLY",
+        "KURENTO_SPLIT_RECORDER",
+        "FLV"
+      ],
+      "name": "MediaProfileSpecType",
+      "doc": "Media profile, used by the RecorderEndpoint builder to specify the codecs and media container that should be used for the recordings."
     },
     {
       "typeFormat": "ENUM",
@@ -878,6 +828,33 @@
       ],
       "name": "SDES",
       "doc": "Security Descriptions for Media Streams"
+    },
+    {
+      "typeFormat": "REGISTER",
+      "properties": [
+        {
+          "name": "isSeekable",
+          "doc": "Seek is possible in video source",
+          "type": "boolean"
+        },
+        {
+          "name": "seekableInit",
+          "doc": "First video position to do seek in ms",
+          "type": "int64"
+        },
+        {
+          "name": "seekableEnd",
+          "doc": "Last video position to do seek in ms",
+          "type": "int64"
+        },
+        {
+          "name": "duration",
+          "doc": "Video duration in ms",
+          "type": "int64"
+        }
+      ],
+      "name": "VideoInfo",
+      "doc": ""
     }
   ],
   "events": [
@@ -891,25 +868,13 @@
       "properties": [],
       "extends": "Media",
       "name": "Paused",
-      "doc": "@deprecated</br>Fired when the recorder goes to pause state"
+      "doc": "Fired when the recorder goes to pause state"
     },
     {
       "properties": [],
       "extends": "Media",
       "name": "Stopped",
-      "doc": "@deprecated</br>Fired when the recorder has been stopped and all the media has been written to storage."
-    },
-    {
-      "properties": [
-        {
-          "name": "candidate",
-          "doc": "New local candidate",
-          "type": "IceCandidate"
-        }
-      ],
-      "extends": "Media",
-      "name": "OnIceCandidate",
-      "doc": "Notifies a new local candidate.\nThese candidates should be sent to the remote peer, to complete the ICE negotiation process.\n@deprecated Use <code>IceCandidateFound</code> instead.\n      "
+      "doc": "Fired when the recorder has been stopped and all the media has been written to storage."
     },
     {
       "properties": [
@@ -926,58 +891,8 @@
     {
       "properties": [],
       "extends": "Media",
-      "name": "OnIceGatheringDone",
-      "doc": "Event fired when al ICE candidates have been gathered.\n@deprecated Use <code>IceGatheringDone</code> instead.\n      "
-    },
-    {
-      "properties": [],
-      "extends": "Media",
       "name": "IceGatheringDone",
       "doc": "Event fired when al ICE candidates have been gathered."
-    },
-    {
-      "properties": [
-        {
-          "name": "streamId",
-          "doc": "The ID of the stream",
-          "type": "int"
-        },
-        {
-          "name": "componentId",
-          "doc": "The ID of the component",
-          "type": "int"
-        },
-        {
-          "name": "state",
-          "doc": "The state of the component",
-          "type": "IceComponentState"
-        }
-      ],
-      "extends": "Media",
-      "name": "OnIceComponentStateChanged",
-      "doc": "Event fired when and ICE component state changes.\nSee :rom:cls:`IceComponentState` for a list of possible states.\n@deprecated Use <code>IceComponentStateChanged</code> instead.\n      "
-    },
-    {
-      "properties": [
-        {
-          "name": "streamId",
-          "doc": "The ID of the stream",
-          "type": "int"
-        },
-        {
-          "name": "componentId",
-          "doc": "The ID of the component",
-          "type": "int"
-        },
-        {
-          "name": "state",
-          "doc": "The state of the component",
-          "type": "IceComponentState"
-        }
-      ],
-      "extends": "Media",
-      "name": "IceComponentStateChange",
-      "doc": "Event fired when and ICE component state changes.\nSee :rom:cls:`IceComponentState` for a list of possible states.\n@deprecated Use <code>IceComponentStateChanged</code> instead.\n      "
     },
     {
       "properties": [
@@ -1010,56 +925,8 @@
         }
       ],
       "extends": "Media",
-      "name": "OnDataChannelOpened",
-      "doc": "Event fired when a new data channel is created.\n@deprecated Use <code>DataChannelOpened</code> instead.\n      "
-    },
-    {
-      "properties": [
-        {
-          "name": "channelId",
-          "doc": "The channel identifier",
-          "type": "int"
-        }
-      ],
-      "extends": "Media",
-      "name": "DataChannelOpen",
-      "doc": "Event fired when a new data channel is created.\n@deprecated Use <code>DataChannelOpened</code> instead.\n      "
-    },
-    {
-      "properties": [
-        {
-          "name": "channelId",
-          "doc": "The channel identifier",
-          "type": "int"
-        }
-      ],
-      "extends": "Media",
       "name": "DataChannelOpened",
       "doc": "Event fired when a new data channel is created."
-    },
-    {
-      "properties": [
-        {
-          "name": "channelId",
-          "doc": "The channel identifier",
-          "type": "int"
-        }
-      ],
-      "extends": "Media",
-      "name": "OnDataChannelClosed",
-      "doc": "Event fired when a data channel is closed.\n@deprecated Use <code>DataChannelClosed</code> instead.\n      "
-    },
-    {
-      "properties": [
-        {
-          "name": "channelId",
-          "doc": "The channel identifier",
-          "type": "int"
-        }
-      ],
-      "extends": "Media",
-      "name": "DataChannelClose",
-      "doc": "Event fired when a data channel is closed.\n@deprecated Use <code>DataChannelClosed</code> instead.\n      "
     },
     {
       "properties": [
@@ -1086,6 +953,12 @@
       "doc": "Event fired when a new pair of ICE candidates is used by the ICE library.\nThis could also happen in the middle of a session, though not likely.\n      "
     },
     {
+      "properties": [],
+      "extends": "Media",
+      "name": "EndOfStream",
+      "doc": "Event raised when the stream that the element sends out is finished."
+    },
+    {
       "properties": [
         {
           "name": "mediaType",
@@ -1096,12 +969,6 @@
       "extends": "Media",
       "name": "OnKeySoftLimit",
       "doc": "Fired when encryption is used and any stream reached the soft key usage limit, which means it will expire soon."
-    },
-    {
-      "properties": [],
-      "extends": "Media",
-      "name": "EndOfStream",
-      "doc": "Event raised when the stream that the element sends out is finished."
     }
   ]
 }
