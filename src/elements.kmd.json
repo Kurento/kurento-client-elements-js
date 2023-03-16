@@ -1,13 +1,13 @@
 {
   "name": "elements",
-  "version": "7.0.0-dev",
-  "kurentoVersion": "^7.0.0-dev",
+  "version": "7.0.0",
+  "kurentoVersion": "^7.0.0",
   "imports": [
     {
       "name": "core",
-      "version": "^7.0.0-dev",
-      "mavenVersion": "[7.0.0-SNAPSHOT,8.0.0-SNAPSHOT)",
-      "npmVersion": "https://github.com/Kurento/kurento-client-core-js.git"
+      "version": "^7.0.0",
+      "mavenVersion": "[7.0.0,8.0.0-SNAPSHOT)",
+      "npmVersion": ">=7.0.0 <8.0.0"
     }
   ],
   "code": {
@@ -15,7 +15,7 @@
       "java": {
         "mavenGroupId": "org.kurento",
         "mavenArtifactId": "kms-api-elements",
-        "mavenVersion": "7.0.0-SNAPSHOT"
+        "mavenVersion": "7.0.0"
       }
     },
     "api": {
@@ -23,13 +23,13 @@
         "packageName": "org.kurento.client",
         "mavenGroupId": "org.kurento",
         "mavenArtifactId": "kurento-client",
-        "mavenVersion": "7.0.0-SNAPSHOT"
+        "mavenVersion": "7.0.0"
       },
       "js": {
         "nodeName": "kurento-client-elements",
         "npmDescription": "JavaScript Client API for Kurento Media Server",
         "npmGit": "https://github.com/Kurento/kurento-client-elements-js.git",
-        "npmVersion": "https://github.com/Kurento/kurento-client-elements-js.git"
+        "npmVersion": "7.0.0"
       }
     },
     "implementation": {
