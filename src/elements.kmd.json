@@ -1,6 +1,6 @@
 {
   "name": "elements",
-  "version": "7.0.0",
+  "version": "7.1.0",
   "kurentoVersion": "^7.0.0",
   "imports": [
     {
@@ -15,7 +15,7 @@
       "java": {
         "mavenGroupId": "org.kurento",
         "mavenArtifactId": "kms-api-elements",
-        "mavenVersion": "7.0.0"
+        "mavenVersion": "7.1.0"
       }
     },
     "api": {
@@ -23,13 +23,13 @@
         "packageName": "org.kurento.client",
         "mavenGroupId": "org.kurento",
         "mavenArtifactId": "kurento-client",
-        "mavenVersion": "7.0.0"
+        "mavenVersion": "7.1.0"
       },
       "js": {
         "nodeName": "kurento-client-elements",
         "npmDescription": "JavaScript Client API for Kurento Media Server",
         "npmGit": "https://github.com/Kurento/kurento-client-elements-js.git",
-        "npmVersion": "7.0.0"
+        "npmVersion": "7.1.0"
       }
     },
     "implementation": {
@@ -538,6 +538,12 @@
           "doc": "the ICE connection state for all the connections.",
           "type": "IceConnection[]",
           "readOnly": true
+        },
+        {
+          "name": "DtlsConnectionState",
+          "doc": "the DTLS connection state for all the connections.",
+          "type": "DtlsConnection[]",
+          "readOnly": true
         }
       ],
       "methods": [
@@ -614,6 +620,7 @@
         "IceCandidateFound",
         "IceGatheringDone",
         "IceComponentStateChanged",
+        "DtlsConnectionStateChange",
         "DataChannelOpened",
         "DataChannelClosed",
         "NewCandidatePairSelected"
@@ -624,12 +631,94 @@
     {
       "typeFormat": "ENUM",
       "values": [
+        "AES_128_CM_HMAC_SHA1_32",
+        "AES_128_CM_HMAC_SHA1_80",
+        "AES_256_CM_HMAC_SHA1_32",
+        "AES_256_CM_HMAC_SHA1_80"
+      ],
+      "name": "CryptoSuite",
+      "doc": "Describes the encryption and authentication algorithms"
+    },
+    {
+      "typeFormat": "REGISTER",
+      "properties": [
+        {
+          "name": "key",
+          "doc": "<p>Master key and salt (plain text)</p>\n          <p>\n          This field provides the the cryptographic master key appended with the master salt, in plain text format. This allows to provide a key that is composed of readable ASCII characters.\n          </p>\n          <p>\n          The expected length of the key (as provided to this parameter) is determined by the crypto-suite for which the key applies (30 characters for AES_CM_128, 46 characters for AES_CM_256). If the length does not match the expected value, the key will be considered invalid.\n          </p>\n          <p>\n          If no key is provided, a random one will be generated using the `getrandom` system call.\n          </p>",
+          "type": "String",
+          "optional": true
+        },
+        {
+          "name": "keyBase64",
+          "doc": "<p>Master key and salt (base64 encoded)</p>\n          <p>\n          This field provides the cryptographic master key appended with the master salt, encoded in base64. This allows to provide a binary key that is not limited to the ASCII character set.\n          </p>\n          <p>\n          The expected length of the key (after being decoded from base64) is determined by the crypto-suite for which the key applies (30 bytes for AES_CM_128, 46 bytes for AES_CM_256). If the length does not match the expected value, the key will be considered invalid.\n          </p>\n          <p>\n          If no key is provided, a random one will be generated using the `getrandom` system call.\n          </p>",
+          "type": "String",
+          "optional": true
+        },
+        {
+          "name": "crypto",
+          "doc": "Selects the cryptographic suite to be used. For available values, please see the CryptoSuite enum.",
+          "type": "CryptoSuite",
+          "optional": true
+        }
+      ],
+      "name": "SDES",
+      "doc": "Security Descriptions for Media Streams"
+    },
+    {
+      "typeFormat": "ENUM",
+      "values": [
+        "WEBM",
+        "MKV",
+        "MP4",
+        "WEBM_VIDEO_ONLY",
+        "WEBM_AUDIO_ONLY",
+        "MKV_VIDEO_ONLY",
+        "MKV_AUDIO_ONLY",
+        "MP4_VIDEO_ONLY",
+        "MP4_AUDIO_ONLY",
+        "JPEG_VIDEO_ONLY",
+        "KURENTO_SPLIT_RECORDER",
+        "FLV"
+      ],
+      "name": "MediaProfileSpecType",
+      "doc": "Media profile, used by the RecorderEndpoint builder to specify the codecs and media container that should be used for the recordings."
+    },
+    {
+      "typeFormat": "ENUM",
+      "values": [
         "NONE",
         "GENPTS",
         "FILL_IF_TRANSCODING"
       ],
       "name": "GapsFixMethod",
       "doc": "How to fix gaps when they are found in the recorded stream.\n<p>\nGaps are typically caused by packet loss in the input streams, such as when an\nRTP or WebRTC media flow suffers from network congestion and some packets don't\narrive at the media server.\n</p>\n<p>Different ways of handling gaps have different tradeoffs:</p>\n<ul>\n  <li>\n    <strong>NONE</strong>: Do not fix gaps.\n    <p>\n      Leave the stream as-is, and store it with any gaps that the stream might\n      have. Some players are clever enough to adapt to this during playback, so\n      that the gaps are reduced to a minimum and no problems are perceived by\n      the user; other players are not so sophisticated, and will struggle trying\n      to decode a file that contains gaps. For example, trying to play such a\n      file directly with Chrome will cause lipsync issues (audio and video will\n      fall out of sync).\n    </p>\n    <p>\n      This is the best choice if you need consistent durations across multiple\n      simultaneous recordings, or if you are anyway going to post-process the\n      recordings (e.g. with an extra FFmpeg step).\n    </p>\n    <p>\n      For example, assume a session length of 15 seconds: packets arrive\n      correctly during the first 5 seconds, then there is a gap, then data\n      arrives again for the last 5 seconds. Also, for simplicity, assume 1 frame\n      per second. With no fix for gaps, the RecorderEndpoint will store each\n      frame as-is, with these timestamps:\n    </p>\n    <pre>\n      frame 1  - 00:01\n      frame 2  - 00:02\n      frame 3  - 00:03\n      frame 4  - 00:04\n      frame 5  - 00:05\n      frame 11 - 00:11\n      frame 12 - 00:12\n      frame 13 - 00:13\n      frame 14 - 00:14\n      frame 15 - 00:15\n    </pre>\n    <p>\n      Notice how the frames between 6 to 10 are missing, but the last 5 frames\n      still conserve their original timestamp. The total length of the file is\n      detected as 15 seconds by most players, although playback could stutter or\n      hang during the missing section.\n    </p>\n  </li>\n  <li>\n    <strong>GENPTS</strong>: Adjust timestamps to generate a smooth progression\n    over all frames.\n    <p>\n      This technique rewrites the timestamp of all frames, so that gaps are\n      suppressed. It provides the best playback experience for recordings that\n      need to be played as-is (i.e. they won't be post-processed). However,\n      fixing timestamps might cause a change in the total duration of a file. So\n      different recordings from the same session might end up with slightly\n      different durations.\n    </p>\n    <p>\n      In our example, the RecorderEndpoint will change all timestamps that\n      follow a gap in the stream, and store each frame as follows:\n    </p>\n    <pre>\n      frame 1  - 00:01\n      frame 2  - 00:02\n      frame 3  - 00:03\n      frame 4  - 00:04\n      frame 5  - 00:05\n      frame 11 - 00:06\n      frame 12 - 00:07\n      frame 13 - 00:08\n      frame 14 - 00:09\n      frame 15 - 00:10\n    </pre>\n    <p>\n      Notice how the frames between 6 to 10 are missing, and the last 5 frames\n      have their timestamps corrected to provide a smooth increment over the\n      previous ones. The total length of the file is detected as 10 seconds, and\n      playback should be correct throughout the whole file.\n    </p>\n  </li>\n  <li>\n    <strong>FILL_IF_TRANSCODING</strong>: (NOT IMPLEMENTED YET).\n    <p>This is a proposal for future improvement of the RecorderEndpoint.</p>\n    <p>\n      It is possible to perform a dynamic adaptation of audio rate and add frame\n      duplication to the video, such that the missing parts are filled with\n      artificial data. This has the advantage of providing a smooth playback\n      result, and at the same time conserving all original timestamps.\n    </p>\n    <p>\n      However, the main issue with this method is that it requires accessing the\n      decoded media; i.e., transcoding must be active. For this reason, the\n      proposal is to offer this option to be enabled only when transcoding would\n      still happen anyways.\n    </p>\n    <p>\n      In our example, the RecorderEndpoint would change all missing frames like\n      this:\n    </p>\n    <pre>\n      frame 1  - 00:01\n      frame 2  - 00:02\n      frame 3  - 00:03\n      frame 4  - 00:04\n      frame 5  - 00:05\n      fake frame - 00:06\n      fake frame - 00:07\n      fake frame - 00:08\n      fake frame - 00:09\n      fake frame - 00:10\n      frame 11 - 00:11\n      frame 12 - 00:12\n      frame 13 - 00:13\n      frame 14 - 00:14\n      frame 15 - 00:15\n    </pre>\n    <p>\n      This joins the best of both worlds: on one hand, the playback should be\n      smooth and even the most basic players should be able to handle the\n      recording files without issue. On the other, the total length of the file\n      is left unmodified, so it matches with the expected duration of the\n      sessions that are being recorded.\n    </p>\n  </li>\n</ul>\n      "
+    },
+    {
+      "typeFormat": "REGISTER",
+      "properties": [
+        {
+          "name": "isSeekable",
+          "doc": "Seek is possible in video source",
+          "type": "boolean"
+        },
+        {
+          "name": "seekableInit",
+          "doc": "First video position to do seek in ms",
+          "type": "int64"
+        },
+        {
+          "name": "seekableEnd",
+          "doc": "Last video position to do seek in ms",
+          "type": "int64"
+        },
+        {
+          "name": "duration",
+          "doc": "Video duration in ms",
+          "type": "int64"
+        }
+      ],
+      "name": "VideoInfo",
+      "doc": ""
     },
     {
       "typeFormat": "REGISTER",
@@ -665,6 +754,18 @@
       ],
       "name": "IceComponentState",
       "doc": "States of an ICE component."
+    },
+    {
+      "typeFormat": "ENUM",
+      "values": [
+        "NEW",
+        "CLOSED",
+        "FAILED",
+        "CONNECTING",
+        "CONNECTED"
+      ],
+      "name": "DtlsConnectionState",
+      "doc": "States of a DTLS connection."
     },
     {
       "typeFormat": "REGISTER",
@@ -714,6 +815,33 @@
       ],
       "name": "IceConnection",
       "doc": "The ICE connection state for a certain stream and component."
+    },
+    {
+      "typeFormat": "REGISTER",
+      "properties": [
+        {
+          "name": "streamId",
+          "doc": "The ID of the stream",
+          "type": "String"
+        },
+        {
+          "name": "componentId",
+          "doc": "The ID of the component",
+          "type": "String"
+        },
+        {
+          "name": "connectionId",
+          "doc": "The ID of the underlying DTLS connection",
+          "type": "String"
+        },
+        {
+          "name": "state",
+          "doc": "The state of the component",
+          "type": "DtlsConnectionState"
+        }
+      ],
+      "name": "DtlsConnection",
+      "doc": "The DTLS connection state for a certain stream and component."
     },
     {
       "typeFormat": "ENUM",
@@ -773,91 +901,21 @@
       ],
       "name": "DSCPValue",
       "doc": "Possible DSCP values\n      <p>\n      WebRTC recommended values are taken from RFC 8837 https://datatracker.ietf.org/doc/html/rfc8837#section-5 , These are the values from AUDIO_VERYLOW to DATA_HIGH. First element in the\n      name indicates kind of traffic that it should apply to, the second indicates relative priority. For video, a third field would indicate if the traffic is intended for high throughput or not.\n      As indicated on RFC 8837 section 5 diagram:\n\n          +=======================+==========+=====+============+============+\n          |       Flow Type       | Very Low | Low |   Medium   |    High    |\n          +=======================+==========+=====+============+============+\n          |         Audio         |  LE (1)  |  DF |  EF (46)   |  EF (46)   |\n          |                       |          | (0) |            |            |\n          +-----------------------+----------+-----+------------+------------+\n          +-----------------------+----------+-----+------------+------------+\n          |   Interactive Video   |  LE (1)  |  DF | AF42, AF43 | AF41, AF42 |\n          | with or without Audio |          | (0) |  (36, 38)  |  (34, 36)  |\n          +-----------------------+----------+-----+------------+------------+\n          +-----------------------+----------+-----+------------+------------+\n          | Non-Interactive Video |  LE (1)  |  DF | AF32, AF33 | AF31, AF32 |\n          | with or without Audio |          | (0) |  (28, 30)  |  (26, 28)  |\n          +-----------------------+----------+-----+------------+------------+\n          +-----------------------+----------+-----+------------+------------+\n          |          Data         |  LE (1)  |  DF |    AF11    |    AF21    |\n          |                       |          | (0) |            |            |\n          +-----------------------+----------+-----+------------+------------+\n\n      As indicated also in RFC, non interactive video is not considered\n      <p>\n      Apart from the WebRTC recommended values, we also include all possible values are referenced in http://www.iana.org/assignments/dscp-registry/dscp-registry.xml of course some of\n      those values are synonyms for the WebRTC recommended ones, they are included mainly for completeness\n      <p>\n      And as a last point, we include a shorthand for Chrome supported markings for low  (CS0), very low (CS1), medium (CS7) and high (CS7) priorities in priority property for RTCRtpSender parameters. See https://developer.mozilla.org/en-US/docs/Web/API/RTCRtpSender/setParameters\n      <p>\n      This only covers outgoing network packets from KMS, to complete the solution, DSCP must be also requested on client, unfortunately for traffic on the other direction, this must be requested to the\n      browser or client. On browser, the client application needs to use the following API https://www.w3.org/TR/webrtc-priority/"
-    },
-    {
-      "typeFormat": "ENUM",
-      "values": [
-        "WEBM",
-        "MKV",
-        "MP4",
-        "WEBM_VIDEO_ONLY",
-        "WEBM_AUDIO_ONLY",
-        "MKV_VIDEO_ONLY",
-        "MKV_AUDIO_ONLY",
-        "MP4_VIDEO_ONLY",
-        "MP4_AUDIO_ONLY",
-        "JPEG_VIDEO_ONLY",
-        "KURENTO_SPLIT_RECORDER",
-        "FLV"
-      ],
-      "name": "MediaProfileSpecType",
-      "doc": "Media profile, used by the RecorderEndpoint builder to specify the codecs and media container that should be used for the recordings."
-    },
-    {
-      "typeFormat": "ENUM",
-      "values": [
-        "AES_128_CM_HMAC_SHA1_32",
-        "AES_128_CM_HMAC_SHA1_80",
-        "AES_256_CM_HMAC_SHA1_32",
-        "AES_256_CM_HMAC_SHA1_80"
-      ],
-      "name": "CryptoSuite",
-      "doc": "Describes the encryption and authentication algorithms"
-    },
-    {
-      "typeFormat": "REGISTER",
-      "properties": [
-        {
-          "name": "key",
-          "doc": "<p>Master key and salt (plain text)</p>\n          <p>\n          This field provides the the cryptographic master key appended with the master salt, in plain text format. This allows to provide a key that is composed of readable ASCII characters.\n          </p>\n          <p>\n          The expected length of the key (as provided to this parameter) is determined by the crypto-suite for which the key applies (30 characters for AES_CM_128, 46 characters for AES_CM_256). If the length does not match the expected value, the key will be considered invalid.\n          </p>\n          <p>\n          If no key is provided, a random one will be generated using the `getrandom` system call.\n          </p>",
-          "type": "String",
-          "optional": true
-        },
-        {
-          "name": "keyBase64",
-          "doc": "<p>Master key and salt (base64 encoded)</p>\n          <p>\n          This field provides the cryptographic master key appended with the master salt, encoded in base64. This allows to provide a binary key that is not limited to the ASCII character set.\n          </p>\n          <p>\n          The expected length of the key (after being decoded from base64) is determined by the crypto-suite for which the key applies (30 bytes for AES_CM_128, 46 bytes for AES_CM_256). If the length does not match the expected value, the key will be considered invalid.\n          </p>\n          <p>\n          If no key is provided, a random one will be generated using the `getrandom` system call.\n          </p>",
-          "type": "String",
-          "optional": true
-        },
-        {
-          "name": "crypto",
-          "doc": "Selects the cryptographic suite to be used. For available values, please see the CryptoSuite enum.",
-          "type": "CryptoSuite",
-          "optional": true
-        }
-      ],
-      "name": "SDES",
-      "doc": "Security Descriptions for Media Streams"
-    },
-    {
-      "typeFormat": "REGISTER",
-      "properties": [
-        {
-          "name": "isSeekable",
-          "doc": "Seek is possible in video source",
-          "type": "boolean"
-        },
-        {
-          "name": "seekableInit",
-          "doc": "First video position to do seek in ms",
-          "type": "int64"
-        },
-        {
-          "name": "seekableEnd",
-          "doc": "Last video position to do seek in ms",
-          "type": "int64"
-        },
-        {
-          "name": "duration",
-          "doc": "Video duration in ms",
-          "type": "int64"
-        }
-      ],
-      "name": "VideoInfo",
-      "doc": ""
     }
   ],
   "events": [
+    {
+      "properties": [
+        {
+          "name": "mediaType",
+          "doc": "The media stream",
+          "type": "MediaType"
+        }
+      ],
+      "extends": "Media",
+      "name": "OnKeySoftLimit",
+      "doc": "Fired when encryption is used and any stream reached the soft key usage limit, which means it will expire soon."
+    },
     {
       "properties": [],
       "extends": "Media",
@@ -875,6 +933,12 @@
       "extends": "Media",
       "name": "Stopped",
       "doc": "Fired when the recorder has been stopped and all the media has been written to storage."
+    },
+    {
+      "properties": [],
+      "extends": "Media",
+      "name": "EndOfStream",
+      "doc": "Event raised when the stream that the element sends out is finished."
     },
     {
       "properties": [
@@ -919,6 +983,33 @@
     {
       "properties": [
         {
+          "name": "streamId",
+          "doc": "The ID of the stream",
+          "type": "String"
+        },
+        {
+          "name": "componentId",
+          "doc": "The ID of the component",
+          "type": "String"
+        },
+        {
+          "name": "connectionId",
+          "doc": "ID of the underlying DTLS connection",
+          "type": "String"
+        },
+        {
+          "name": "state",
+          "doc": "The state of the component",
+          "type": "DtlsConnectionState"
+        }
+      ],
+      "extends": "Media",
+      "name": "DtlsConnectionStateChange",
+      "doc": "Event fired when and ICE component DTLS connection state changes.\nSee :rom:cls:`DtlsComponentState` for a list of possible states.\n      "
+    },
+    {
+      "properties": [
+        {
           "name": "channelId",
           "doc": "The channel identifier",
           "type": "int"
@@ -951,24 +1042,6 @@
       "extends": "Media",
       "name": "NewCandidatePairSelected",
       "doc": "Event fired when a new pair of ICE candidates is used by the ICE library.\nThis could also happen in the middle of a session, though not likely.\n      "
-    },
-    {
-      "properties": [],
-      "extends": "Media",
-      "name": "EndOfStream",
-      "doc": "Event raised when the stream that the element sends out is finished."
-    },
-    {
-      "properties": [
-        {
-          "name": "mediaType",
-          "doc": "The media stream",
-          "type": "MediaType"
-        }
-      ],
-      "extends": "Media",
-      "name": "OnKeySoftLimit",
-      "doc": "Fired when encryption is used and any stream reached the soft key usage limit, which means it will expire soon."
     }
   ]
 }
